@@ -55,6 +55,13 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       const placement = randomPlacement(lanterns)
       const lantern = await createLantern({ message, tag, ...placement })
 
+      // The write can fail (offline, rejected by the server). Say so rather
+      // than flying a lantern that was never actually saved.
+      if (!lantern) {
+        setAnnouncement("Your lantern could not be released. Please try again.")
+        return
+      }
+
       playLanternRelease()
       setAnnouncement("Your lantern has been released into the sky.")
 
