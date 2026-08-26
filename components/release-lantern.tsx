@@ -85,24 +85,27 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
             role="dialog"
             aria-modal="true"
             aria-label="Write a lantern and release it"
-            className="relative my-auto"
+            className="relative my-auto flex flex-col items-center"
           >
-            {/* Close — floats just outside the lantern, top right. */}
-            <button
-              type="button"
-              onClick={close}
-              aria-label="Close without releasing"
-              className="absolute -top-16 right-0 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:-top-4 sm:-right-16"
-              style={{
-                borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
-                backgroundColor: "rgba(255,255,255,0.07)",
-                color: "var(--glow)",
-              }}
-            >
-              <X className="size-5" aria-hidden="true" />
-            </button>
+            {/* Sized to the lantern so the close button anchors to its corner
+                and the lantern shares the controls' center line. */}
+            <div className="relative w-[min(78vw,19rem)]">
+              {/* Close — floats just outside the lantern, top right. */}
+              <button
+                type="button"
+                onClick={close}
+                aria-label="Close without releasing"
+                className="absolute -top-16 right-0 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:-top-4 sm:-right-16"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
+                  backgroundColor: "rgba(255,255,255,0.07)",
+                  color: "var(--glow)",
+                }}
+              >
+                <X className="size-5" aria-hidden="true" />
+              </button>
 
-            <LanternNote
+              <LanternNote
               paper={category.paper}
               ink={category.ink}
               accent={category.color}
@@ -146,7 +149,8 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                   </span>
                 </div>
               }
-            />
+              />
+            </div>
 
             {/* Controls sit off the paper so the lantern stays believable. */}
             <div className="mt-6 flex flex-col items-center gap-4">

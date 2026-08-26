@@ -121,11 +121,3 @@ export function randomPlacement(existing: Array<{ x: number; y: number }>, seed 
 
 /** Origin of the release animation — next to the bottom-left button. */
 export const RELEASE_ORIGIN = { x: 12, y: 94 }
-
-/** A waypoint that curves the release path up through the top-center. */
-export function releaseWaypoint(to: { x: number; y: number }) {
-  return {
-    x: Math.round(((to.x + DRIFT_TARGET.x) / 2 + (RELEASE_ORIGIN.x - DRIFT_TARGET.x) * 0.2) * 10) / 10,
-    y: Math.round((to.y + (RELEASE_ORIGIN.y - to.y) * 0.35) * 10) / 10,
-  }
-}

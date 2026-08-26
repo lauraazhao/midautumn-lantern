@@ -110,23 +110,24 @@
   }
 }
 
+/* A single straight drift from the release corner to the lantern's place in
+   the sky. No waypoint, so the path never bends; the gentle scale-down is
+   what sells "floating away" rather than a change of direction. */
 @keyframes lantern-release {
   0% {
     left: var(--from-x);
     top: var(--from-y);
     opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(1.12);
   }
-  10% {
+  18% {
     opacity: 1;
-  }
-  55% {
-    left: var(--mid-x);
-    top: var(--mid-y);
   }
   100% {
     left: var(--to-x);
     top: var(--to-y);
     opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(0.9);
   }
 }
 
@@ -143,7 +144,8 @@
 }
 
 .animate-lantern-release {
-  animation: lantern-release var(--release-duration, 2600ms) cubic-bezier(0.34, 0.11, 0.2, 1) forwards;
+  /* Long and eased at both ends: it lifts away rather than shooting off. */
+  animation: lantern-release var(--release-duration, 5600ms) cubic-bezier(0.4, 0.02, 0.32, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

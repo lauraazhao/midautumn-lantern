@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState, type CSSProperties } from "reac
 import type { Lantern, LanternTag } from "@/types/lantern"
 import { computeDepths } from "@/lib/lantern-depth"
 import { createLantern } from "@/lib/lantern-repository"
-import { randomPlacement, releaseWaypoint, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
+import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { BackgroundArt, CloudArt, LanternArt, MoonArt } from "@/components/scene-art"
 import { LanternField } from "@/components/lantern-field"
@@ -53,14 +53,12 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
     [lanterns, reducedMotion],
   )
 
+  // A straight drift: only a start and an end, so the path never bends.
   const flightVars = useMemo(() => {
     if (!flying) return undefined
-    const mid = releaseWaypoint({ x: flying.x, y: flying.y })
     return {
       "--from-x": `${RELEASE_ORIGIN.x}%`,
       "--from-y": `${RELEASE_ORIGIN.y}%`,
-      "--mid-x": `${mid.x}%`,
-      "--mid-y": `${mid.y}%`,
       "--to-x": `${flying.x}%`,
       "--to-y": `${flying.y}%`,
     } as CSSProperties
