@@ -11,7 +11,7 @@
 // the random ambient tones from ever clashing with a lantern's chime.
 const PENTATONIC = [220, 246.94, 277.18, 329.63, 369.99, 440, 493.88, 554.37]
 
-const MASTER_LEVEL = 0.5
+const MASTER_LEVEL = 0.62
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null
@@ -47,54 +47,107 @@ function rampMaster(target: number, seconds: number) {
 }
 
 /**
- * A slow drone plus occasional distant tones. The drone supplies the warmth
- * and the sparse tones keep it from feeling static, without a loop point.
+ * A four-chord progression voiced as a slow pad, plus a quiet sub for warmth
+ * and sparse bells drifting over the top.
+ *
+ * The voices sit between roughly 165Hz and 400Hz on purpose. An earlier
+ * version droned at 55-110Hz behind a 420Hz lowpass, which measures fine but
+ * is below what laptop and phone speakers actually reproduce — it read as
+ * silence. This register is audible on anything.
  */
+const PROGRESSION = [
+  [220.0, 261.63, 329.63], // A minor
+  [174.61, 220.0, 261.63], // F major
+  [261.63, 329.63, 392.0], // C major
+  [196.0, 246.94, 293.66], // G major
+]
+
+/** How long the pad rests on each chord. */
+const CHORD_SECONDS = 13
+
 function startAmbient(): AmbientBed {
   const audio = getContext()
   if (!audio || !master) return { stop: () => {} }
 
+  const now = audio.currentTime
+
   const bed = audio.createGain()
-  bed.gain.value = 0.22
+  bed.gain.setValueAtTime(0, now)
+  bed.gain.linearRampToValueAtTime(0.5, now + 4)
   bed.connect(master)
 
-  // Dark lowpass keeps the drone under the sound effects.
-  const shelf = audio.createBiquadFilter()
-  shelf.type = "lowpass"
-  shelf.frequency.value = 420
-  shelf.Q.value = 0.6
-  shelf.connect(bed)
+  // Soft ceiling: warm enough to sit under the effects, open enough to hear.
+  const tone = audio.createBiquadFilter()
+  tone.type = "lowpass"
+  tone.frequency.value = 1500
+  tone.Q.value = 0.5
+  tone.connect(bed)
 
-  // Root, fifth and octave, each slightly detuned so they beat against one
-  // another and drift in and out of phase forever.
-  const drones = [55, 82.5, 110.3].map((freq, i) => {
-    const osc = audio.createOscillator()
-    osc.type = i === 0 ? "sine" : "triangle"
-    osc.frequency.value = freq
+  // Slow filter sweep so the pad breathes instead of sitting still.
+  const sweep = audio.createOscillator()
+  sweep.frequency.value = 0.045
+  const sweepDepth = audio.createGain()
+  sweepDepth.gain.value = 480
+  sweep.connect(sweepDepth).connect(tone.frequency)
+  sweep.start()
 
+  // Three chord voices, each a detuned pair so the pad shimmers.
+  const voices = PROGRESSION[0].map((freq, i) => {
     const gain = audio.createGain()
-    gain.gain.value = 0.34 / (i + 1)
+    gain.gain.value = 0.16 / (1 + i * 0.3)
+    gain.connect(tone)
 
-    // Independent slow swell per voice.
+    const oscs = [-7, 7].map((detune) => {
+      const osc = audio.createOscillator()
+      osc.type = "triangle"
+      osc.frequency.value = freq
+      osc.detune.value = detune
+      osc.connect(gain)
+      osc.start()
+      return osc
+    })
+
+    // Independent swell per voice, so they drift in and out of each other.
     const lfo = audio.createOscillator()
-    lfo.frequency.value = 0.03 + i * 0.017
+    lfo.frequency.value = 0.05 + i * 0.021
     const lfoDepth = audio.createGain()
-    lfoDepth.gain.value = 0.16 / (i + 1)
+    lfoDepth.gain.value = 0.05
     lfo.connect(lfoDepth).connect(gain.gain)
-
-    osc.connect(gain).connect(shelf)
-    osc.start()
     lfo.start()
-    return { osc, lfo }
+
+    return { oscs, lfo }
   })
 
-  // Sparse bell-like tones, far back in the mix.
-  let timer: ReturnType<typeof setTimeout> | undefined
+  // Quiet sine an octave below the root — felt more than heard.
+  const sub = audio.createOscillator()
+  sub.type = "sine"
+  sub.frequency.value = PROGRESSION[0][0] / 2
+  const subGain = audio.createGain()
+  subGain.gain.value = 0.1
+  sub.connect(subGain).connect(bed)
+  sub.start()
+
+  // Walk the progression, gliding rather than jumping between chords.
+  let step = 0
+  const chordTimer = setInterval(() => {
+    step = (step + 1) % PROGRESSION.length
+    const chord = PROGRESSION[step]
+    const at = audio.currentTime
+    voices.forEach((v, i) => {
+      for (const osc of v.oscs) {
+        osc.frequency.setTargetAtTime(chord[i], at, 1.8)
+      }
+    })
+    sub.frequency.setTargetAtTime(chord[0] / 2, at, 2.2)
+  }, CHORD_SECONDS * 1000)
+
+  // Sparse bell-like tones over the pad.
+  let toneTimer: ReturnType<typeof setTimeout> | undefined
   const scheduleTone = () => {
-    const delay = 7000 + Math.random() * 12000
-    timer = setTimeout(() => {
+    const delay = 6000 + Math.random() * 11000
+    toneTimer = setTimeout(() => {
       const root = PENTATONIC[Math.floor(Math.random() * PENTATONIC.length)]
-      voice(root * 2, { level: 0.05, decay: 5.5, brightness: 1800, target: bed })
+      voice(root * 2, { level: 0.09, decay: 5.5, brightness: 2400, target: bed })
       scheduleTone()
     }, delay)
   }
@@ -102,15 +155,18 @@ function startAmbient(): AmbientBed {
 
   return {
     stop: () => {
-      if (timer) clearTimeout(timer)
-      const now = audio.currentTime
-      bed.gain.cancelScheduledValues(now)
-      bed.gain.setValueAtTime(bed.gain.value, now)
-      bed.gain.linearRampToValueAtTime(0, now + 1.2)
-      for (const { osc, lfo } of drones) {
-        osc.stop(now + 1.4)
-        lfo.stop(now + 1.4)
+      clearInterval(chordTimer)
+      if (toneTimer) clearTimeout(toneTimer)
+      const at = audio.currentTime
+      bed.gain.cancelScheduledValues(at)
+      bed.gain.setValueAtTime(bed.gain.value, at)
+      bed.gain.linearRampToValueAtTime(0, at + 1.2)
+      for (const { oscs, lfo } of voices) {
+        for (const osc of oscs) osc.stop(at + 1.4)
+        lfo.stop(at + 1.4)
       }
+      sub.stop(at + 1.4)
+      sweep.stop(at + 1.4)
     },
   }
 }

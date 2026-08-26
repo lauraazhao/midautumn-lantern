@@ -46,7 +46,7 @@ export function Lantern({ lantern, depth, onOpen, smoothFloat = false }: Lantern
       type="button"
       onClick={handleClick}
       aria-label={`Read the lantern released ${relativeTime(lantern.createdAt)}`}
-      className="group absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full focus:outline-none"
+      className="group absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-0 outline-none focus:outline-none focus-visible:outline-none"
       style={{
         left: `${lantern.x}%`,
         top: `${lantern.y}%`,

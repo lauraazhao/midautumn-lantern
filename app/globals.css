@@ -77,6 +77,23 @@
   body {
     overscroll-behavior: none;
   }
+  /*
+   * Firefox paints a dotted inner border on focused buttons via this
+   * pseudo-element. It is inset from the button box rather than hugging the
+   * artwork, so on a lantern it showed up as a stray dashed rectangle
+   * floating near the light. `outline: none` cannot reach it — the border
+   * has to be cleared directly.
+   */
+  button::-moz-focus-inner,
+  [type="button"]::-moz-focus-inner,
+  [type="submit"]::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+  /* Tapping a lantern on mobile should not flash a grey box over it. */
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 /* --- Scene motion -------------------------------------------------------- */
