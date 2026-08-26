@@ -113,21 +113,12 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
         </div>
       </div>
 
-      {/* ── Title ──────────────────────────────────────────────────────── */}
-      <header className="pointer-events-none absolute top-6 left-4 z-[70] max-w-[16rem] sm:left-8">
-        {/* Soft scrim so the title stays legible when a lantern drifts behind it. */}
-        <div
-          aria-hidden="true"
-          className="absolute -inset-x-6 -inset-y-5 -z-10 blur-xl"
-          style={{
-            background:
-              "radial-gradient(70% 70% at 30% 40%, color-mix(in oklab, var(--sky-deep) 85%, transparent) 0%, transparent 100%)",
-          }}
-        />
-        <h1 className="font-serif text-xl leading-tight text-balance sm:text-2xl">The Lantern Sky</h1>
-        <p className="mt-1 text-sm text-muted-foreground text-pretty">
-          Messages released for the Mid-Autumn moon. Tap a lantern to read one.
-        </p>
+      {/* ── Caption ────────────────────────────────────────────────────── */}
+      <header className="pointer-events-none absolute bottom-24 left-1/2 z-[70] -translate-x-1/2 px-4 sm:bottom-8">
+        <h1 className="bg-caption px-3 py-1 text-center text-sm leading-snug tracking-wide text-caption-foreground text-balance sm:px-4 sm:text-base">
+          Read wishes for the Mid-Autumn Festival
+        </h1>
+        <span className="sr-only">Select a lantern to read the message written on it.</span>
       </header>
 
       {/* ── Lanterns ───────────────────────────────────────────────────── */}

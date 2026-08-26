@@ -24,6 +24,8 @@
   --color-sky-deep: var(--sky-deep);
   --color-sky-mid: var(--sky-mid);
   --color-glow: var(--glow);
+  --color-caption: var(--caption);
+  --color-caption-foreground: var(--caption-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -58,6 +60,9 @@
   --input: color-mix(in oklab, #f2e7d2 18%, transparent);
   --ring: #e0ae61;
   --glow: #ffcf8a;
+  /* Subtitle plate: solid black box with the classic yellow caption text. */
+  --caption: #000000;
+  --caption-foreground: #f5d33c;
   --radius: 0.875rem;
 }
 
