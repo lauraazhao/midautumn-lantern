@@ -6,10 +6,19 @@ import { computeDepths } from "@/lib/lantern-depth"
 import { createLantern } from "@/lib/lantern-repository"
 import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { playLanternChime, playLanternRelease } from "@/lib/audio-engine"
 import { BackgroundArt, CloudArt, LanternArt, MoonArt } from "@/components/scene-art"
 import { LanternField } from "@/components/lantern-field"
 import { LanternMessage } from "@/components/lantern-message"
 import { ReleaseLantern } from "@/components/release-lantern"
+import { SoundToggle } from "@/components/sound-toggle"
+
+/** Turns a lantern id into a stable scale degree, so each one has its own tone. */
+function toneSeed(id: string) {
+  let sum = 0
+  for (let i = 0; i < id.length; i += 1) sum += id.charCodeAt(i)
+  return sum
+}
 
 type NightSkyProps = {
   initialLanterns: Lantern[]
@@ -28,6 +37,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
 
   const handleOpen = useCallback((lantern: Lantern, trigger: HTMLElement) => {
     openerRef.current = trigger
+    playLanternChime(toneSeed(lantern.id))
     setOpened(lantern)
   }, [])
 
@@ -41,6 +51,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       const placement = randomPlacement(lanterns)
       const lantern = await createLantern({ message, tag, ...placement })
 
+      playLanternRelease()
       setAnnouncement("Your lantern has been released into the sky.")
 
       if (reducedMotion) {
@@ -143,6 +154,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       )}
 
       {/* ── Controls ───────────────────────────────────────────────────── */}
+      <SoundToggle />
       <ReleaseLantern onRelease={handleRelease} busy={Boolean(flying)} />
 
       <p aria-live="polite" className="sr-only">

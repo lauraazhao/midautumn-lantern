@@ -131,8 +131,26 @@
   }
 }
 
+/* A slow pulse on the sound control while audio is off, so it is noticed
+   without competing with the lanterns for attention. */
+@keyframes sound-hint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.14);
+  }
+}
+
 .animate-lantern-float {
   animation: lantern-float var(--float-duration, 9s) ease-in-out var(--float-delay, 0s) infinite;
+}
+
+.animate-sound-hint {
+  animation: sound-hint 3.4s ease-in-out infinite;
 }
 
 .animate-cloud-drift {
