@@ -64,19 +64,26 @@ export function FoldedPaper({ paper, ink, inside, footer }: FoldedPaperProps) {
           }}
         >
           <div
-            className="flex min-h-44 flex-col justify-center gap-4 px-6 py-8 sm:min-h-52 sm:px-8"
+            className="flex min-h-36 flex-col justify-center gap-4 px-6 py-7 sm:min-h-44 sm:px-8"
             style={{ backfaceVisibility: "hidden" }}
           >
             {inside}
           </div>
         </div>
 
-        {/* Crease */}
-        <div aria-hidden="true" className="h-px w-full bg-black/15" />
+        {/* Crease — papered, so the dark sky never shows through the fold */}
+        <div
+          aria-hidden="true"
+          className="h-[3px] w-full"
+          style={{
+            backgroundColor: paper,
+            backgroundImage: `linear-gradient(to bottom, ${ink}26, ${ink}0d 55%, rgba(255,255,255,0.35))`,
+          }}
+        />
 
         {/* Lower half — visible even while folded */}
         <div
-          className="flex min-h-44 flex-col justify-end gap-4 rounded-b-[10px] px-6 py-6 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.8)] sm:min-h-52 sm:px-8"
+          className="flex flex-col justify-end gap-4 rounded-b-[10px] px-6 pt-6 pb-6 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.8)] sm:px-8"
           style={surface}
         >
           {footer}
