@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150" width="100" height="150" role="img" aria-label="Lantern placeholder">
+  <!-- PLACEHOLDER: replace this file with the final lantern artwork (same viewBox ratio, ~2:3). -->
+  <rect x="34" y="2" width="32" height="6" rx="3" fill="#E7C08A" />
+  <rect x="49" y="8" width="2" height="10" fill="#E7C08A" />
+  <rect x="22" y="18" width="56" height="10" rx="4" fill="#D9A257" />
+  <rect x="18" y="28" width="64" height="82" rx="16" fill="#F2C97E" />
+  <rect x="18" y="28" width="64" height="82" rx="16" fill="none" stroke="#FFE7BC" stroke-width="2" />
+  <rect x="22" y="110" width="56" height="10" rx="4" fill="#D9A257" />
+  <rect x="40" y="120" width="20" height="18" rx="4" fill="#C98A4B" opacity="0.75" />
+  <rect x="46" y="138" width="8" height="10" rx="3" fill="#C98A4B" opacity="0.5" />
+</svg>

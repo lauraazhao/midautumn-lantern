@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120" role="img" aria-label="Cloud placeholder">
+  <!-- PLACEHOLDER: replace this file with the final cloud / atmosphere artwork (wide viewBox). -->
+  <g fill="#8FA0CE" opacity="0.5">
+    <rect x="10" y="52" width="380" height="44" rx="22" />
+    <rect x="70" y="26" width="150" height="52" rx="26" />
+    <rect x="210" y="34" width="120" height="46" rx="23" />
+  </g>
+</svg>
