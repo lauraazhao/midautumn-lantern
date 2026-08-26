@@ -5,14 +5,14 @@ import { X } from "lucide-react"
 import type { Lantern } from "@/types/lantern"
 import { lanternCategories } from "@/types/lantern"
 import { relativeTime } from "@/lib/format-time"
-import { FoldedPaper } from "@/components/folded-paper"
+import { LanternNote } from "@/components/lantern-note"
 
 type LanternMessageProps = {
   lantern: Lantern
   onClose: () => void
 }
 
-/** The opened note: a dimmed sky, a folded paper, and the message inside it. */
+/** The opened lantern: a dimmed sky, and one lantern up close with its message on it. */
 export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
   const category = lanternCategories[lantern.tag]
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -32,7 +32,7 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
       <div
         aria-hidden="true"
         onClick={onClose}
-        className="absolute inset-0 bg-sky-deep/65 backdrop-blur-[3px] duration-500 animate-in fade-in"
+        className="absolute inset-0 bg-sky-deep/70 backdrop-blur-[3px] duration-500 animate-in fade-in"
       />
 
       <div
@@ -41,34 +41,48 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
         aria-label={`A ${category.label.toLowerCase()} message, released ${relativeTime(lantern.createdAt)}`}
         className="relative"
       >
-        <FoldedPaper
+        {/* Close — floats just outside the lantern, top right. */}
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={onClose}
+          aria-label="Close message"
+          className="absolute -top-16 right-0 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:-top-4 sm:-right-16"
+          style={{
+            borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
+            backgroundColor: "rgba(255,255,255,0.07)",
+            color: "var(--glow)",
+          }}
+        >
+          <X className="size-5" aria-hidden="true" />
+        </button>
+
+        <LanternNote
           paper={category.paper}
           ink={category.ink}
-          inside={
-            <p className="font-serif text-pretty text-xl leading-relaxed sm:text-2xl">{lantern.message}</p>
+          accent={category.color}
+          message={
+            <p
+              className="font-serif text-pretty text-xl leading-relaxed sm:text-2xl"
+              style={{ textShadow: "0 1px 0 rgba(255,255,255,0.35)" }}
+            >
+              {lantern.message}
+            </p>
           }
           footer={
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="flex flex-col gap-2">
-                <span
-                  className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-xs font-medium tracking-wide uppercase"
-                  style={{ backgroundColor: category.color, color: category.paper }}
-                >
-                  {category.label}
-                </span>
-                <span className="text-xs opacity-70">Released {relativeTime(lantern.createdAt)}</span>
-              </div>
-
-              <button
-                ref={closeRef}
-                type="button"
-                onClick={onClose}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-                style={{ borderColor: `${category.ink}40` }}
+            <div className="flex flex-col items-center gap-1.5">
+              <span
+                aria-hidden="true"
+                className="h-px w-10 rounded-full"
+                style={{ backgroundColor: `${category.ink}33` }}
+              />
+              <span
+                className="font-serif text-xs tracking-[0.2em] uppercase"
+                style={{ color: category.color }}
               >
-                <X className="size-4" aria-hidden="true" />
-                Close
-              </button>
+                {category.label}
+              </span>
+              <span className="text-xs opacity-65">Released {relativeTime(lantern.createdAt)}</span>
             </div>
           }
         />
