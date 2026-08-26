@@ -1,0 +1,13 @@
+# Query: background-placeholder.svg
+# ContextLines: 1
+
+2 results - 1 file
+
+components/scene-art.tsx:
+  11   *   /public/assets/cloud-placeholder.svg       -> final cloud artwork
+  12:  *   /public/assets/lantern-sky-background.png  -> final background (svg/webp/png)
+  13   *   /public/assets/paper-texture-placeholder.svg -> final paper texture
+
+  22    cloud: "/assets/cloud-placeholder.svg",
+  23:   background: "/assets/lantern-sky-background.png",
+  24    paperTexture: "/assets/paper-texture-placeholder.svg",
