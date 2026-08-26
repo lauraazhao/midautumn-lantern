@@ -150,6 +150,22 @@
   }
 }
 
+/* Caption drift: a barely-there sway, as if the plate hangs in the same air
+   as the lanterns. Kept to sub-pixel-ish amounts so text stays legible. */
+@keyframes caption-drift {
+  0%,
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  50% {
+    transform: translate3d(-50%, -3px, 0);
+  }
+}
+
+.animate-caption-drift {
+  animation: caption-drift 7.5s ease-in-out infinite;
+}
+
 .animate-lantern-float {
   animation: lantern-float var(--float-duration, 9s) ease-in-out var(--float-delay, 0s) infinite;
 }
@@ -173,6 +189,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-lantern-float,
+  .animate-caption-drift,
   .animate-cloud-drift,
   .animate-moon-breathe,
   .animate-lantern-release {
