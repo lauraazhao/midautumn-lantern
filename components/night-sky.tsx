@@ -162,6 +162,16 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
         </div>
       )}
 
+      {/* ── Credit ─────────────────────────────────────────────────────── */}
+      <a
+        href="https://laurazhao.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute right-4 bottom-4 z-[70] text-xs tracking-[0.12em] text-glow/55 uppercase transition-colors duration-300 hover:text-glow focus-visible:text-glow focus-visible:outline-none sm:right-6 sm:bottom-6"
+      >
+        Built by Laura Zhao
+      </a>
+
       {/* ── Controls ───────────────────────────────────────────────────── */}
       <SoundToggle />
       <ReleaseLantern onRelease={handleRelease} busy={Boolean(flying)} />
