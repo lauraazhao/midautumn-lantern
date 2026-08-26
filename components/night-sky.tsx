@@ -114,7 +114,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       {/* ── Caption ────────────────────────────────────────────────────── */}
       <header className="pointer-events-none absolute bottom-24 left-1/2 z-[70] -translate-x-1/2 px-4 sm:bottom-8">
         <h1 className="bg-caption px-3 py-1 text-center text-sm leading-snug tracking-wide text-caption-foreground text-balance sm:px-4 sm:text-base">
-          Read wishes for the Mid-Autumn Festival
+          What are people wishing for this Mid-Autumn Festival?
         </h1>
         <span className="sr-only">Select a lantern to read the message written on it.</span>
       </header>
