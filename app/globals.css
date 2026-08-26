@@ -111,14 +111,19 @@
 }
 
 /* A single straight drift from the release corner to the lantern's place in
-   the sky. No waypoint, so the path never bends; the gentle scale-down is
-   what sells "floating away" rather than a change of direction. */
+   the sky. No waypoint, so the path never bends; it starts oversized and
+   recedes, which sells "floating away" rather than a change of direction.
+
+   The last frame is the lantern's resting state exactly — scale 1, full
+   opacity, centred on its final coordinates — because the field lantern that
+   replaces it on landing renders at that state. Any difference here shows up
+   as a visible jump at the moment the animation ends. */
 @keyframes lantern-release {
   0% {
     left: var(--from-x);
     top: var(--from-y);
     opacity: 0;
-    transform: translate3d(-50%, -50%, 0) scale(1.12);
+    transform: translate3d(-50%, -50%, 0) scale(1.18);
   }
   18% {
     opacity: 1;
@@ -127,7 +132,7 @@
     left: var(--to-x);
     top: var(--to-y);
     opacity: 1;
-    transform: translate3d(-50%, -50%, 0) scale(0.9);
+    transform: translate3d(-50%, -50%, 0) scale(1);
   }
 }
 

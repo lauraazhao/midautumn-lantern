@@ -26,6 +26,22 @@ const BLUR = { far: 1.1, near: 0 }
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
+/**
+ * The depth a freshly released lantern will have once it joins the field: it
+ * is always the newest message, so it always lands at the near end.
+ *
+ * The release animation renders with this so the lantern in flight is exactly
+ * the size, opacity and blur of the lantern that replaces it on landing —
+ * without it, the two disagree and the lantern visibly resizes as it settles.
+ */
+export const NEAR_DEPTH: LanternDepth = {
+  depth: 1,
+  scale: SCALE.near,
+  opacity: OPACITY.near,
+  blur: BLUR.near,
+  zIndex: 50,
+}
+
 export function computeDepths(lanterns: Lantern[]): Record<string, LanternDepth> {
   if (lanterns.length === 0) return {}
 

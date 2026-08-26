@@ -2,12 +2,13 @@
 
 import { useCallback, useMemo, useRef, useState, type CSSProperties } from "react"
 import type { Lantern, LanternTag } from "@/types/lantern"
-import { computeDepths } from "@/lib/lantern-depth"
+import { computeDepths, NEAR_DEPTH } from "@/lib/lantern-depth"
 import { createLantern } from "@/lib/lantern-repository"
 import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { playLanternChime, playLanternRelease } from "@/lib/audio-engine"
-import { BackgroundArt, CloudArt, LanternArt, MoonArt } from "@/components/scene-art"
+import { BackgroundArt, CloudArt, MoonArt } from "@/components/scene-art"
+import { LanternBody, LANTERN_BASE } from "@/components/lantern-body"
 import { LanternField } from "@/components/lantern-field"
 import { LanternMessage } from "@/components/lantern-message"
 import { ReleaseLantern } from "@/components/release-lantern"
@@ -28,6 +29,9 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
   const [lanterns, setLanterns] = useState(initialLanterns)
   const [opened, setOpened] = useState<Lantern | null>(null)
   const [flying, setFlying] = useState<Lantern | null>(null)
+  // Lanterns that arrived by release: their drift starts at rest so they do
+  // not jump the moment the flight animation hands off to the field.
+  const [landedIds, setLandedIds] = useState<ReadonlySet<string>>(() => new Set())
   const [announcement, setAnnouncement] = useState("")
   const openerRef = useRef<HTMLElement | null>(null)
   const reducedMotion = useReducedMotion()
@@ -53,6 +57,8 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
 
       playLanternRelease()
       setAnnouncement("Your lantern has been released into the sky.")
+
+      setLandedIds((prev) => new Set(prev).add(lantern.id))
 
       if (reducedMotion) {
         setLanterns((prev) => [...prev, lantern])
@@ -131,25 +137,22 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       </header>
 
       {/* ── Lanterns ───────────────────────────────────────────────────── */}
-      <LanternField lanterns={lanterns} depths={depths} onOpen={handleOpen} />
+      <LanternField lanterns={lanterns} depths={depths} onOpen={handleOpen} landedIds={landedIds} />
 
-      {/* Newly released lantern in flight */}
+      {/* Newly released lantern in flight. It renders through the same body as
+          the field lanterns, at the depth it will land with, so the handoff on
+          landing is invisible. */}
       {flying && (
         <div
           aria-hidden="true"
-          className="animate-lantern-release pointer-events-none absolute z-[75] -translate-x-1/2 -translate-y-1/2"
+          className={`animate-lantern-release pointer-events-none absolute z-[75] grid place-items-center ${LANTERN_BASE}`}
           style={flightVars}
           onAnimationEnd={() => {
             setLanterns((prev) => [...prev, flying])
             setFlying(null)
           }}
         >
-          <div
-            className="h-[54px] w-9 drop-shadow-[0_0_22px_rgba(255,207,138,0.65)] sm:h-[72px] sm:w-12"
-            style={{ transform: `rotate(${flying.rotation}deg)` }}
-          >
-            <LanternArt />
-          </div>
+          <LanternBody depth={NEAR_DEPTH} rotation={flying.rotation} />
         </div>
       )}
 
