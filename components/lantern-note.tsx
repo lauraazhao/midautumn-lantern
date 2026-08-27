@@ -11,8 +11,8 @@ type LanternNoteProps = {
   accent: string
   /** The message, written on the lantern's paper. */
   message: ReactNode
-  /** Small print along the bottom of the lantern body. */
-  footer: ReactNode
+  /** Optional small print along the bottom of the lantern body. */
+  footer?: ReactNode
 }
 
 /**
@@ -22,10 +22,8 @@ type LanternNoteProps = {
  * hoop with the flame beneath it — so the message sits directly on the same
  * surface that glows. It keeps drifting gently, as if you floated up next to it.
  *
- * ── ASSET SWAP POINT ──
- * The body is a flat category color + `ASSETS.paperTexture` overlay, shaded to
- * read as a lit cylinder. To use real lantern artwork, replace the background
- * layers on the body below; the content slots stay exactly the same.
+ * The uploaded lantern artwork sits behind the content slots. It is zoomed
+ * slightly so the paper body fills this close-up view.
  */
 export function LanternNote({ paper, ink, accent, message, footer }: LanternNoteProps) {
   const floatVars = {
@@ -36,9 +34,9 @@ export function LanternNote({ paper, ink, accent, message, footer }: LanternNote
   } as CSSProperties
 
   return (
-    <div className="animate-lantern-float w-[min(78vw,19rem)]" style={floatVars}>
-      <div className="relative duration-700 animate-in fade-in zoom-in-90">
-        {/* Halo — the lantern lights the air around it. */}
+    <div className="animate-lantern-float h-[min(58dvh,36rem)] max-w-[86vw] aspect-[2/3]" style={floatVars}>
+      <div className="relative h-full w-full duration-700 animate-in fade-in zoom-in-90">
+        {/* Ambient light behind the uploaded artwork. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -inset-[28%] rounded-full opacity-70 blur-[10px]"
@@ -47,67 +45,22 @@ export function LanternNote({ paper, ink, accent, message, footer }: LanternNote
           }}
         />
 
-        {/* Top ring — where the paper gathers. */}
-        <div
+        <img
+          src={ASSETS.lantern}
+          alt=""
           aria-hidden="true"
-          className="relative mx-auto h-2.5 w-[54%] rounded-full"
-          style={{
-            background: "linear-gradient(to bottom, #7a5732 0%, #3a2413 60%, #24160b 100%)",
-            boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset, 0 6px 14px -6px rgba(0,0,0,0.8)",
-          }}
+          draggable={false}
+          className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain"
+          style={{ transform: "translate(0.7rem, 1rem) scale(1.85)" }}
         />
 
-        {/* Body — lit paper, and the writing on it. */}
         <div
-          className="relative -mt-1 flex min-h-[23rem] flex-col sm:min-h-[25rem]"
-          style={{
-            color: ink,
-            backgroundColor: paper,
-            backgroundImage: [
-              `url(${ASSETS.paperTexture})`,
-              // Flame light pooling up from the bottom.
-              "radial-gradient(130% 78% at 50% 104%, rgba(255,203,130,0.62) 0%, rgba(255,203,130,0.18) 38%, transparent 66%)",
-              // Cylinder shading — dark at the edges, bright down the middle.
-              "linear-gradient(to right, rgba(46,24,8,0.30) 0%, rgba(46,24,8,0.08) 14%, rgba(255,255,255,0.14) 50%, rgba(46,24,8,0.08) 86%, rgba(46,24,8,0.30) 100%)",
-            ].join(","),
-            backgroundSize: "100% 100%, 100% 100%, 100% 100%",
-            borderRadius: "46% 46% 42% 42% / 13% 13% 11% 11%",
-            boxShadow:
-              "inset 0 -22px 46px -14px rgba(255,190,110,0.5), inset 0 14px 30px -16px rgba(46,24,8,0.35), 0 34px 80px -28px rgba(0,0,0,0.85)",
-          }}
+          className="absolute inset-[24%_14%_30%] flex flex-col gap-3 px-6 py-4 text-center sm:px-9 sm:py-5"
+          style={{ color: ink }}
         >
-          {/* Paper seams down the lantern. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              borderRadius: "inherit",
-              backgroundImage: `repeating-linear-gradient(to right, transparent 0, transparent calc(25% - 1px), ${ink}14 calc(25% - 1px), ${ink}14 25%)`,
-            }}
-          />
-
-          <div className="relative flex flex-1 flex-col gap-5 px-8 py-12 text-center sm:px-10">
-            <div className="grid flex-1 place-items-center">{message}</div>
-            {footer}
-          </div>
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2">{message}</div>
+          {footer}
         </div>
-
-        {/* Bottom hoop, then the flame burning below it. */}
-        <div
-          aria-hidden="true"
-          className="relative z-10 mx-auto -mt-1.5 h-2 w-[46%] rounded-full"
-          style={{
-            background: "linear-gradient(to bottom, #6d4c2b 0%, #2c1b0f 100%)",
-            boxShadow: "0 6px 16px -6px rgba(0,0,0,0.85)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none relative mx-auto -mt-2 size-8 rounded-full opacity-90 blur-[5px]"
-          style={{
-            background: "radial-gradient(circle, var(--glow) 0%, rgba(255,150,60,0.45) 45%, transparent 72%)",
-          }}
-        />
       </div>
     </div>
   )

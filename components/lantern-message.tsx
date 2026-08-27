@@ -69,23 +69,21 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
               {lantern.message}
             </p>
           }
-          footer={
-            <div className="flex flex-col items-center gap-1.5">
-              <span
-                aria-hidden="true"
-                className="h-px w-10 rounded-full"
-                style={{ backgroundColor: `${category.ink}33` }}
-              />
-              <span
-                className="font-serif text-xs tracking-[0.2em] uppercase"
-                style={{ color: category.color }}
-              >
-                {category.label}
-              </span>
-              <span className="text-xs opacity-65">Released {relativeTime(lantern.createdAt)}</span>
-            </div>
-          }
         />
+        <div className="mt-2 flex flex-col items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className="h-px w-10 rounded-full"
+            style={{ backgroundColor: `${category.ink}33` }}
+          />
+          <span
+            className="font-serif text-xs tracking-[0.2em] uppercase"
+            style={{ color: category.color }}
+          >
+            {category.label}
+          </span>
+          <span className="text-xs opacity-65">Released {relativeTime(lantern.createdAt)}</span>
+        </div>
       </div>
     </div>
   )

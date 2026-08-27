@@ -28,6 +28,10 @@ type LanternRow = {
  */
 const LANTERN_COLUMNS = "id, message, tag, created_at, x, y, rotation"
 
+function hasSupabaseConfig() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+}
+
 function isLanternTag(value: string): value is LanternTag {
   return Object.hasOwn(lanternCategories, value)
 }
@@ -48,6 +52,10 @@ function fromRow(row: LanternRow): Lantern {
 
 /** Every lantern in the sky, oldest first — the order the field expects. */
 export async function getLanterns(): Promise<Lantern[]> {
+  if (!hasSupabaseConfig()) {
+    return []
+  }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -81,6 +89,18 @@ export async function createLantern(input: NewLantern): Promise<Lantern | null> 
   if (!isLanternTag(input.tag)) {
     console.log("[v0] Rejected lantern: unknown tag", input.tag)
     return null
+  }
+
+  if (!hasSupabaseConfig()) {
+    return {
+      id: crypto.randomUUID(),
+      message,
+      tag: input.tag,
+      createdAt: new Date().toISOString(),
+      x: input.x,
+      y: input.y,
+      rotation: input.rotation,
+    }
   }
 
   const supabase = await createClient()

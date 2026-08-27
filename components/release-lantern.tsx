@@ -89,7 +89,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
           >
             {/* Sized to the lantern so the close button anchors to its corner
                 and the lantern shares the controls' center line. */}
-            <div className="relative w-[min(78vw,19rem)]">
+            <div className="relative h-[min(58dvh,36rem)] max-w-[86vw] aspect-[2/3]">
               {/* Close — floats just outside the lantern, top right. */}
               <button
                 type="button"
@@ -131,29 +131,27 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                   />
                 </>
               }
-              footer={
-                <div className="flex flex-col items-center gap-1.5">
-                  <span
-                    aria-hidden="true"
-                    className="h-px w-10 rounded-full"
-                    style={{ backgroundColor: `${category.ink}33` }}
-                  />
-                  <span
-                    className="font-serif text-xs tracking-[0.2em] uppercase"
-                    style={{ color: category.color }}
-                  >
-                    {category.label}
-                  </span>
-                  <span aria-live="polite" className="text-xs tabular-nums opacity-65">
-                    {remaining} characters left
-                  </span>
-                </div>
-              }
               />
             </div>
 
             {/* Controls sit off the paper so the lantern stays believable. */}
-            <div className="mt-6 flex flex-col items-center gap-4">
+            <div className="mt-3 flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-10 rounded-full"
+                  style={{ backgroundColor: `${category.ink}33` }}
+                />
+                <span
+                  className="font-serif text-xs tracking-[0.2em] uppercase"
+                  style={{ color: category.color }}
+                >
+                  {category.label}
+                </span>
+                <span aria-live="polite" className="text-xs tabular-nums opacity-65">
+                  {remaining} characters left
+                </span>
+              </div>
               <CategorySelector value={tag} onChange={setTag} />
               <button
                 type="submit"

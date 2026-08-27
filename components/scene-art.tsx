@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils"
  */
 
 export const ASSETS = {
-  lantern: "/assets/lantern-placeholder.svg",
+  lantern: "/assets/lantern.png",
   moon: "/assets/moon-placeholder.svg",
   cloud: "/assets/cloud-placeholder.svg",
-  background: "/assets/background-placeholder.svg",
+  background: "/assets/background.png",
   paperTexture: "/assets/paper-texture-placeholder.svg",
 }
 
