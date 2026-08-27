@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import type { LanternTag } from "@/types/lantern"
 import { lanternCategories, MAX_MESSAGE_LENGTH } from "@/types/lantern"
 import { CategorySelector } from "@/components/category-selector"
-import { LanternNote } from "@/components/lantern-note"
+import { LanternNote, lanternMessageTextSize } from "@/components/lantern-note"
 
 type ReleaseLanternProps = {
   onRelease: (input: { message: string; tag: LanternTag }) => void
@@ -30,6 +30,14 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
   const category = lanternCategories[tag]
   const remaining = MAX_MESSAGE_LENGTH - message.length
   const canRelease = message.trim().length > 0 && !busy
+  const messageTextSize = lanternMessageTextSize(message.length)
+
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current
+    if (!textarea || !open) return
+    textarea.style.height = "auto"
+    textarea.style.height = `${textarea.scrollHeight}px`
+  }, [message, messageTextSize, open])
 
   useEffect(() => {
     if (!open) return
@@ -119,9 +127,9 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                     value={message}
                     onChange={(event) => setMessage(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
                     maxLength={MAX_MESSAGE_LENGTH}
-                    rows={5}
+                    rows={1}
                     placeholder="A wish, a thank you, a hope for someone…"
-                    className="w-full resize-none border-0 bg-transparent text-center font-serif text-xl leading-relaxed outline-none placeholder:opacity-40 focus-visible:outline-none sm:text-2xl"
+                    className={`w-full resize-none overflow-hidden border-0 bg-transparent text-center font-serif outline-none placeholder:opacity-40 focus-visible:outline-none ${messageTextSize}`}
                     style={{
                       color: category.ink,
                       caretColor: category.color,

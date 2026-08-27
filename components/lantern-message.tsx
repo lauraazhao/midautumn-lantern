@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 import type { Lantern } from "@/types/lantern"
 import { lanternCategories } from "@/types/lantern"
 import { relativeTime } from "@/lib/format-time"
-import { LanternNote } from "@/components/lantern-note"
+import { LanternNote, lanternMessageTextSize } from "@/components/lantern-note"
 
 type LanternMessageProps = {
   lantern: Lantern
@@ -15,6 +15,7 @@ type LanternMessageProps = {
 /** The opened lantern: a dimmed sky, and one lantern up close with its message on it. */
 export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
   const category = lanternCategories[lantern.tag]
+  const messageTextSize = lanternMessageTextSize(lantern.message.length)
   const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -63,8 +64,11 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
           accent={category.color}
           message={
             <p
-              className="font-serif text-pretty text-xl leading-relaxed sm:text-2xl"
-              style={{ textShadow: "0 1px 0 rgba(255,255,255,0.35)" }}
+              className={`w-full max-w-full whitespace-pre-wrap break-words font-serif text-pretty ${messageTextSize}`}
+              style={{
+                overflowWrap: "anywhere",
+                textShadow: "0 1px 0 rgba(255,255,255,0.35)",
+              }}
             >
               {lantern.message}
             </p>

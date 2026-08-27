@@ -15,6 +15,13 @@ type LanternNoteProps = {
   footer?: ReactNode
 }
 
+/** Shared type scale so composing and reading the same message look identical. */
+export function lanternMessageTextSize(length: number) {
+  if (length > 150) return "text-xs leading-relaxed sm:text-sm"
+  if (length > 90) return "text-sm leading-relaxed sm:text-base"
+  return "text-xl leading-relaxed sm:text-2xl"
+}
+
 /**
  * A single lantern seen up close, with the message written on its paper.
  *
@@ -55,10 +62,12 @@ export function LanternNote({ paper, ink, accent, message, footer }: LanternNote
         />
 
         <div
-          className="absolute inset-[24%_14%_30%] flex flex-col gap-3 px-6 py-4 text-center sm:px-9 sm:py-5"
+          className="absolute inset-[16%_10%_16%] flex flex-col gap-3 px-4 py-4 text-center sm:px-6 sm:py-5"
           style={{ color: ink }}
         >
-          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2">{message}</div>
+          <div className="flex min-h-0 w-full max-w-full flex-1 flex-col items-center justify-center gap-2">
+            {message}
+          </div>
           {footer}
         </div>
       </div>
