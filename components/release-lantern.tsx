@@ -89,7 +89,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
           >
             {/* Sized to the lantern so the close button anchors to its corner
                 and the lantern shares the controls' center line. */}
-            <div className="relative h-[min(58dvh,36rem)] max-w-[86vw] aspect-[2/3]">
+            <div className="relative h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3]">
               {/* Close — floats just outside the lantern, top right. */}
               <button
                 type="button"

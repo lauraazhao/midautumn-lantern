@@ -34,7 +34,7 @@ export function LanternNote({ paper, ink, accent, message, footer }: LanternNote
   } as CSSProperties
 
   return (
-    <div className="animate-lantern-float h-[min(58dvh,36rem)] max-w-[86vw] aspect-[2/3]" style={floatVars}>
+    <div className="animate-lantern-float h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3]" style={floatVars}>
       <div className="relative h-full w-full duration-700 animate-in fade-in zoom-in-90">
         {/* Ambient light behind the uploaded artwork. */}
         <div
@@ -51,7 +51,7 @@ export function LanternNote({ paper, ink, accent, message, footer }: LanternNote
           aria-hidden="true"
           draggable={false}
           className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain"
-          style={{ transform: "translate(0.7rem, 1rem) scale(1.85)" }}
+          style={{ transform: "translate(0.7rem, 1rem) scale(1.65)" }}
         />
 
         <div
