@@ -1,7 +1,7 @@
 "use client"
 
 import type { CSSProperties, MouseEvent } from "react"
-import type { Lantern as LanternType } from "@/types/lantern"
+import { lanternCategories, type Lantern as LanternType } from "@/types/lantern"
 import type { LanternDepth } from "@/lib/lantern-depth"
 import { hashString, createRandom } from "@/lib/lantern-positioning"
 import { relativeTime } from "@/lib/format-time"
@@ -56,7 +56,11 @@ export function Lantern({ lantern, depth, onOpen, smoothFloat = false }: Lantern
       }}
     >
       <span className="animate-lantern-float block" style={floatVars(lantern.id, smoothFloat)}>
-        <LanternBody depth={depth} rotation={lantern.rotation} />
+        <LanternBody
+          depth={depth}
+          rotation={lantern.rotation}
+          glowColor={lanternCategories[lantern.tag].color}
+        />
       </span>
     </button>
   )

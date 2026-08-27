@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useMemo, useRef, useState, type CSSProperties } from "react"
-import type { Lantern, LanternTag } from "@/types/lantern"
+import { lanternCategories, type Lantern, type LanternTag } from "@/types/lantern"
 import { computeDepths, NEAR_DEPTH } from "@/lib/lantern-depth"
 import { createLantern } from "@/lib/lantern-repository"
 import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
@@ -165,7 +165,11 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
             setFlying(null)
           }}
         >
-          <LanternBody depth={NEAR_DEPTH} rotation={flying.rotation} />
+          <LanternBody
+            depth={NEAR_DEPTH}
+            rotation={flying.rotation}
+            glowColor={lanternCategories[flying.tag].color}
+          />
         </div>
       )}
 

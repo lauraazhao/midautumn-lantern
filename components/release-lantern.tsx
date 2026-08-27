@@ -87,15 +87,14 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
             aria-label="Write a lantern and release it"
             className="relative my-auto flex flex-col items-center"
           >
-            {/* Sized to the lantern so the close button anchors to its corner
-                and the lantern shares the controls' center line. */}
+            {/* Sized to the lantern so it shares the controls' center line. */}
             <div className="relative h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3]">
-              {/* Close — floats just outside the lantern, top right. */}
+              {/* Stay near the lantern while clearing its scaled top-right edge. */}
               <button
                 type="button"
                 onClick={close}
                 aria-label="Close without releasing"
-                className="absolute -top-16 right-0 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:-top-4 sm:-right-16"
+                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
                 style={{
                   borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
                   backgroundColor: "rgba(255,255,255,0.07)",
@@ -134,8 +133,9 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
               />
             </div>
 
-            {/* Controls sit off the paper so the lantern stays believable. */}
-            <div className="mt-3 flex flex-col items-center gap-4">
+            {/* The artwork is scaled beyond its layout box, so this spacing
+                keeps all metadata and controls below the visible lantern. */}
+            <div className="mt-[min(16dvh,9rem)] flex flex-col items-center gap-4">
               <div className="flex flex-col items-center gap-1.5">
                 <span
                   aria-hidden="true"

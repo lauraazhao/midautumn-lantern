@@ -41,13 +41,13 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
         aria-label={`A ${category.label.toLowerCase()} message, released ${relativeTime(lantern.createdAt)}`}
         className="relative"
       >
-        {/* Close — floats just outside the lantern, top right. */}
+        {/* Stay near the lantern while clearing its scaled top-right edge. */}
         <button
           ref={closeRef}
           type="button"
           onClick={onClose}
           aria-label="Close message"
-          className="absolute -top-16 right-0 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:-top-4 sm:-right-16"
+          className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
           style={{
             borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
             backgroundColor: "rgba(255,255,255,0.07)",
@@ -70,7 +70,9 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
             </p>
           }
         />
-        <div className="mt-2 flex flex-col items-center gap-1.5">
+        {/* The artwork is scaled beyond its layout box, so this spacing clears
+            the visible bottom of the lantern rather than only the box. */}
+        <div className="mt-[min(16dvh,9rem)] flex flex-col items-center gap-1.5">
           <span
             aria-hidden="true"
             className="h-px w-10 rounded-full"
