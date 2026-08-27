@@ -62,7 +62,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
-        className="fixed bottom-5 left-4 z-[80] inline-flex min-h-12 items-center gap-2.5 rounded-full border border-primary/30 bg-card/70 px-5 text-sm text-foreground shadow-[0_16px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md transition-colors hover:border-primary/60 hover:bg-card/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:bottom-8 sm:left-8"
+        className="fixed bottom-5 left-4 z-[80] inline-flex min-h-12 items-center gap-2.5 rounded-none border border-primary/30 bg-card/70 px-5 text-sm text-foreground shadow-[0_16px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md transition-colors hover:border-primary/60 hover:bg-card/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:bottom-8 sm:left-8"
       >
         <span
           aria-hidden="true"
@@ -94,7 +94,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                 type="button"
                 onClick={close}
                 aria-label="Close without releasing"
-                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
+                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-none border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
                 style={{
                   borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
                   backgroundColor: "rgba(255,255,255,0.07)",
@@ -156,7 +156,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
               <button
                 type="submit"
                 disabled={!canRelease}
-                className="inline-flex min-h-11 items-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex min-h-11 items-center rounded-none bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {busy ? "Releasing…" : "Release into the sky"}
               </button>

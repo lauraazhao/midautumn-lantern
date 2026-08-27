@@ -3,9 +3,8 @@ import type { Lantern } from "@/types/lantern"
 /**
  * Recency -> perspective.
  *
- * Newer messages read as closer to the viewer (a little larger, a little more
- * present); older ones recede. The effect is intentionally subtle — it should
- * feel like depth, not like a leaderboard.
+ * Newer messages read as closer to the viewer: substantially larger and more
+ * present, while older ones recede into the distance.
  *
  * Recomputed whenever lantern data changes, so depth stays relative to the
  * newest message in the set.
@@ -20,7 +19,7 @@ export type LanternDepth = {
   zIndex: number
 }
 
-const SCALE = { far: 0.62, near: 1.12 }
+const SCALE = { far: 0.6, near: 1.8 }
 const OPACITY = { far: 0.68, near: 1 }
 const BLUR = { far: 1.1, near: 0 }
 
@@ -45,17 +44,19 @@ export const NEAR_DEPTH: LanternDepth = {
 export function computeDepths(lanterns: Lantern[]): Record<string, LanternDepth> {
   if (lanterns.length === 0) return {}
 
-  const times = lanterns.map((l) => new Date(l.createdAt).getTime())
-  const oldest = Math.min(...times)
-  const newest = Math.max(...times)
-  const span = newest - oldest || 1
+  const times = lanterns.map((lantern) => new Date(lantern.createdAt).getTime())
+  const validTimes = times.filter(Number.isFinite)
+  const oldest = Math.min(...validTimes)
+  const newest = Math.max(...validTimes)
+  const span = newest - oldest
 
   const result: Record<string, LanternDepth> = {}
 
   lanterns.forEach((lantern, index) => {
-    const raw = (times[index] - oldest) / span
-    // Ease so the newest few stand out without flattening everything else.
-    const depth = Math.pow(raw, 0.75)
+    const time = times[index]
+    // Chronological depth is intentionally direct and unambiguous:
+    // oldest timestamp = 0 (back), newest timestamp = 1 (front).
+    const depth = Number.isFinite(time) ? (span === 0 ? 1 : (time - oldest) / span) : 0
 
     result[lantern.id] = {
       depth,

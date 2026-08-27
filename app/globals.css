@@ -60,10 +60,10 @@
   --input: color-mix(in oklab, #f2e7d2 18%, transparent);
   --ring: #e0ae61;
   --glow: #ffcf8a;
-  /* Subtitle plate: solid black box with the classic yellow caption text. */
+  /* Subtitle plate base: black with classic yellow caption text. */
   --caption: #000000;
   --caption-foreground: #f5d33c;
-  --radius: 0.875rem;
+  --radius: 0;
 }
 
 @layer base {
@@ -128,8 +128,9 @@
 }
 
 /* A single straight drift from the release corner to the lantern's place in
-   the sky. No waypoint, so the path never bends; it starts oversized and
-   recedes, which sells "floating away" rather than a change of direction.
+   the sky. No waypoint, so the path never bends. A newly released message is
+   already at the foreground depth and stays that size throughout its flight;
+   only older field lanterns are allowed to recede.
 
    The last frame is the lantern's resting state exactly — scale 1, full
    opacity, centred on its final coordinates — because the field lantern that
@@ -140,7 +141,7 @@
     left: var(--from-x);
     top: var(--from-y);
     opacity: 0;
-    transform: translate3d(-50%, -50%, 0) scale(1.18);
+    transform: translate3d(-50%, -50%, 0) scale(1);
   }
   18% {
     opacity: 1;
@@ -187,6 +188,15 @@
   animation: lantern-float var(--float-duration, 9s) ease-in-out var(--float-delay, 0s) infinite;
 }
 
+/* When the chronological depth range changes, dimensions, haze and visibility
+   ease together so older messages feel farther away rather than abruptly
+   resizing. */
+.lantern-depth-transition {
+  transition-property: width, height, opacity, filter;
+  transition-duration: 1800ms;
+  transition-timing-function: cubic-bezier(0.4, 0.02, 0.25, 1);
+}
+
 .animate-sound-hint {
   animation: sound-hint 3.4s ease-in-out infinite;
 }
@@ -211,5 +221,9 @@
   .animate-moon-breathe,
   .animate-lantern-release {
     animation: none !important;
+  }
+
+  .lantern-depth-transition {
+    transition: none !important;
   }
 }

@@ -22,7 +22,7 @@ export function LanternBody({ depth, rotation, glowColor }: LanternBodyProps) {
 
   return (
     <span
-      className="relative block transition-[filter,opacity] duration-500 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
+      className="lantern-depth-transition relative block group-hover:opacity-100 group-focus-visible:opacity-100"
       style={
         {
           "--lantern-glow": glow,
@@ -51,4 +51,4 @@ export function LanternBody({ depth, rotation, glowColor }: LanternBodyProps) {
 }
 
 /** Responsive field scale. Both the field and the flight layer need this. */
-export const LANTERN_BASE = "[--lantern-base:32px] sm:[--lantern-base:40px] lg:[--lantern-base:48px]"
+export const LANTERN_BASE = "[--lantern-base:40px] sm:[--lantern-base:50px] lg:[--lantern-base:60px]"

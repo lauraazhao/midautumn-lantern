@@ -30,7 +30,7 @@ export function SoundToggle() {
       onClick={toggle}
       aria-pressed={on}
       aria-label={on ? "Turn sound off" : "Turn sound on"}
-      className="group absolute top-5 left-5 z-[70] flex items-center gap-2 rounded-full border border-foreground/15 bg-foreground/10 px-3 py-2 text-foreground/70 backdrop-blur-md transition-colors hover:border-glow/40 hover:bg-foreground/15 hover:text-glow focus-visible:ring-2 focus-visible:ring-glow/70 focus-visible:outline-none sm:top-6 sm:left-6"
+      className="group absolute top-5 left-5 z-[70] flex items-center gap-2 rounded-none border border-foreground/15 bg-foreground/10 px-3 py-2 text-foreground/70 backdrop-blur-md transition-colors hover:border-glow/40 hover:bg-foreground/15 hover:text-glow focus-visible:ring-2 focus-visible:ring-glow/70 focus-visible:outline-none sm:top-6 sm:left-6"
     >
       {on ? (
         <Volume2 aria-hidden="true" className="h-4 w-4" strokeWidth={1.5} />
@@ -43,7 +43,7 @@ export function SoundToggle() {
       {!on && (
         <span
           aria-hidden="true"
-          className="animate-sound-hint pointer-events-none absolute inset-0 rounded-full border border-glow/40"
+          className="animate-sound-hint pointer-events-none absolute inset-0 rounded-none border border-glow/40"
         />
       )}
     </button>

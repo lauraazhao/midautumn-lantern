@@ -47,7 +47,7 @@ export function LanternMessage({ lantern, onClose }: LanternMessageProps) {
           type="button"
           onClick={onClose}
           aria-label="Close message"
-          className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
+          className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-none border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
           style={{
             borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
             backgroundColor: "rgba(255,255,255,0.07)",
