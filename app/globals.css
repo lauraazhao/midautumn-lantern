@@ -110,10 +110,29 @@
 
 @keyframes cloud-drift {
   0% {
-    transform: translate3d(-4%, 0, 0);
+    transform: translate3d(-12vw, 0, 0);
+  }
+  25% {
+    transform: translate3d(-6vw, -10px, 0);
+  }
+  50% {
+    transform: translate3d(0, 4px, 0);
+  }
+  75% {
+    transform: translate3d(6vw, -8px, 0);
   }
   100% {
-    transform: translate3d(4%, 0, 0);
+    transform: translate3d(12vw, 0, 0);
+  }
+}
+
+@keyframes cloud-bottom-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -9px, 0);
   }
 }
 
@@ -126,6 +145,168 @@
     opacity: 1;
   }
 }
+
+@keyframes background-hue-shift {
+  0%,
+  100% {
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  50% {
+    filter: hue-rotate(-28deg) saturate(1.12);
+  }
+}
+
+@keyframes sparkle-shimmer {
+  0%,
+  100% {
+    opacity: var(--sparkle-low, 0.12);
+    filter: brightness(0.8);
+  }
+  45% {
+    opacity: var(--sparkle-high, 0.42);
+    filter: brightness(1.4);
+  }
+  65% {
+    opacity: var(--sparkle-mid, 0.2);
+    filter: brightness(1);
+  }
+}
+
+@keyframes star-sparkle-glint {
+  0%,
+  70%,
+  100% {
+    opacity: 0.08;
+    transform: scale(0.55) rotate(0deg);
+  }
+  82% {
+    opacity: 0.65;
+    transform: scale(1) rotate(45deg);
+  }
+  90% {
+    opacity: 0.18;
+    transform: scale(0.7) rotate(90deg);
+  }
+}
+
+/* Each full-screen layer contains a different scattering of tiny stars. The
+   gradients stay relative to the viewport, so the field fills every screen
+   size without introducing additional DOM nodes for individual sparkles. */
+.sparkle-layer {
+  background-repeat: no-repeat;
+  animation: sparkle-shimmer var(--sparkle-duration, 6s) ease-in-out var(--sparkle-delay, 0s) infinite;
+}
+
+.sparkle-layer-one {
+  --sparkle-duration: 5.8s;
+  --sparkle-delay: -1.3s;
+  --sparkle-low: 0.1;
+  --sparkle-high: 0.38;
+  background-image:
+    radial-gradient(circle at 7% 12%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 19% 31%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 34% 9%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 48% 27%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 63% 15%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 76% 37%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 91% 21%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 13% 72%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 57% 68%, #fff7d6 0 1px, transparent 1.8px),
+    radial-gradient(circle at 86% 82%, #fff7d6 0 1px, transparent 1.8px);
+}
+
+.sparkle-layer-two {
+  --sparkle-duration: 7.4s;
+  --sparkle-delay: -4.6s;
+  --sparkle-low: 0.08;
+  --sparkle-high: 0.32;
+  background-image:
+    radial-gradient(circle at 12% 44%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 26% 18%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 39% 54%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 53% 7%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 68% 48%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 82% 11%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 95% 56%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 23% 87%, #dce8ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 72% 76%, #dce8ff 0 0.8px, transparent 1.6px);
+}
+
+.sparkle-layer-three {
+  --sparkle-duration: 9.2s;
+  --sparkle-delay: -6.1s;
+  --sparkle-low: 0.12;
+  --sparkle-mid: 0.25;
+  --sparkle-high: 0.46;
+  background-image:
+    radial-gradient(circle at 4% 58%, #ffe9b3 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 31% 41%, #ffe9b3 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 44% 78%, #ffe9b3 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 59% 33%, #ffe9b3 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 79% 62%, #ffe9b3 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 93% 91%, #ffe9b3 0 1.2px, transparent 2.2px);
+}
+
+.sparkle-layer-four {
+  --sparkle-duration: 6.7s;
+  --sparkle-delay: -2.8s;
+  --sparkle-low: 0.07;
+  --sparkle-mid: 0.16;
+  --sparkle-high: 0.3;
+  background-image:
+    radial-gradient(circle at 3% 27%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 16% 59%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 29% 74%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 37% 22%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 46% 48%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 55% 91%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 64% 58%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 71% 25%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 81% 44%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 88% 70%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 97% 35%, #edf5ff 0 0.8px, transparent 1.6px),
+    radial-gradient(circle at 42% 94%, #edf5ff 0 0.8px, transparent 1.6px);
+}
+
+/* Larger four-point glints punctuate the field of tiny twinkling stars. */
+.star-sparkle {
+  position: absolute;
+  width: var(--star-size, 10px);
+  height: var(--star-size, 10px);
+  opacity: 0.08;
+  animation: star-sparkle-glint var(--star-duration, 8s) ease-in-out var(--star-delay, 0s) infinite;
+}
+
+.star-sparkle::before,
+.star-sparkle::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  content: "";
+  background: #fff5cf;
+  border-radius: 999px;
+  box-shadow: 0 0 5px color-mix(in srgb, #fff5cf 55%, transparent);
+  transform: translate(-50%, -50%);
+}
+
+.star-sparkle::before {
+  width: 100%;
+  height: 1px;
+}
+
+.star-sparkle::after {
+  width: 1px;
+  height: 100%;
+}
+
+.star-sparkle-one { top: 16%; left: 14%; --star-size: 10px; --star-duration: 7.8s; --star-delay: -2s; }
+.star-sparkle-two { top: 29%; left: 42%; --star-size: 8px; --star-duration: 9.3s; --star-delay: -6.4s; }
+.star-sparkle-three { top: 13%; left: 69%; --star-size: 12px; --star-duration: 10.5s; --star-delay: -4.1s; }
+.star-sparkle-four { top: 45%; left: 89%; --star-size: 9px; --star-duration: 8.6s; --star-delay: -7.2s; }
+.star-sparkle-five { top: 61%; left: 24%; --star-size: 11px; --star-duration: 11.2s; --star-delay: -3.7s; }
+.star-sparkle-six { top: 73%; left: 53%; --star-size: 8px; --star-duration: 7.4s; --star-delay: -5.8s; }
+.star-sparkle-seven { top: 57%; left: 76%; --star-size: 10px; --star-duration: 9.8s; --star-delay: -1.4s; }
+.star-sparkle-eight { top: 87%; left: 92%; --star-size: 7px; --star-duration: 8.9s; --star-delay: -4.9s; }
 
 /* A single straight drift from the release corner to the lantern's place in
    the sky. No waypoint, so the path never bends. A newly released message is
@@ -202,7 +383,15 @@
 }
 
 .animate-cloud-drift {
-  animation: cloud-drift var(--cloud-duration, 90s) ease-in-out var(--cloud-delay, 0s) infinite alternate;
+  animation: cloud-drift var(--cloud-duration, 150s) ease-in-out var(--cloud-delay, 0s) infinite alternate;
+}
+
+.animate-cloud-bottom-float {
+  animation: cloud-bottom-float 12s ease-in-out -6s infinite;
+}
+
+.animate-background-hue {
+  animation: background-hue-shift 24s ease-in-out infinite;
 }
 
 .animate-moon-breathe {
@@ -217,9 +406,13 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-lantern-float,
   .animate-caption-drift,
+  .animate-background-hue,
+  .animate-cloud-bottom-float,
   .animate-cloud-drift,
   .animate-moon-breathe,
-  .animate-lantern-release {
+  .animate-lantern-release,
+  .sparkle-layer,
+  .star-sparkle {
     animation: none !important;
   }
 

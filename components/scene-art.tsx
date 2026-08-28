@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
  *
  *   /public/assets/lantern-placeholder.svg     -> final lantern artwork
  *   /public/assets/moon-placeholder.svg        -> final moon artwork
- *   /public/assets/cloud-placeholder.svg       -> final cloud artwork
+ *   /public/assets/cloud.png                   -> final cloud artwork
+ *   /public/assets/cloud-bottom.png            -> full-width bottom cloud
  *   /public/assets/background-placeholder.svg  -> final background (svg/webp/png)
  *   /public/assets/paper-texture-placeholder.svg -> final paper texture
  *
@@ -19,7 +20,8 @@ import { cn } from "@/lib/utils"
 export const ASSETS = {
   lantern: "/assets/lantern.png",
   moon: "/assets/moon-placeholder.svg",
-  cloud: "/assets/cloud-placeholder.svg",
+  cloud: "/assets/cloud.png",
+  cloudBottom: "/assets/cloud-bottom.png",
   background: "/assets/background.png",
   paperTexture: "/assets/paper-texture-placeholder.svg",
 }
@@ -57,6 +59,18 @@ export function CloudArt({ className }: { className?: string }) {
       aria-hidden="true"
       draggable={false}
       className={cn("block h-full w-full select-none object-contain", className)}
+    />
+  )
+}
+
+export function CloudBottomArt({ className }: { className?: string }) {
+  return (
+    <img
+      src={ASSETS.cloudBottom}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      className={cn("block h-full w-full select-none object-contain object-bottom", className)}
     />
   )
 }

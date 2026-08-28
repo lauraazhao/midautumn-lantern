@@ -23,7 +23,7 @@ const FALLBACK: LanternDepth = { depth: 0.5, scale: 0.85, opacity: 0.85, blur: 0
  */
 export function LanternField({ lanterns, depths, onOpen, landedIds }: LanternFieldProps) {
   return (
-    <div className={`absolute inset-0 ${LANTERN_BASE}`} style={{ contain: "layout paint" } as CSSProperties}>
+    <div className={`absolute inset-0 z-10 ${LANTERN_BASE}`} style={{ contain: "layout paint" } as CSSProperties}>
       {lanterns.map((lantern) => (
         <Lantern
           key={lantern.id}

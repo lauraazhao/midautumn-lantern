@@ -7,7 +7,7 @@ import { createLantern } from "@/lib/lantern-repository"
 import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { playLanternChime, playLanternRelease } from "@/lib/audio-engine"
-import { BackgroundArt, CloudArt, MoonArt } from "@/components/scene-art"
+import { BackgroundArt, CloudArt, CloudBottomArt, MoonArt } from "@/components/scene-art"
 import { LanternBody, LANTERN_BASE } from "@/components/lantern-body"
 import { LanternField } from "@/components/lantern-field"
 import { LanternMessage } from "@/components/lantern-message"
@@ -91,7 +91,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-sky-deep">
       {/* ── Scene backdrop ─────────────────────────────────────────────── */}
-      <BackgroundArt />
+      <BackgroundArt className="animate-background-hue" />
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -101,38 +101,62 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
         }}
       />
 
+      {/* Sparse star layers shimmer at different rates so the sky feels alive. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[3] overflow-hidden">
+        <span className="sparkle-layer sparkle-layer-one absolute inset-0" />
+        <span className="sparkle-layer sparkle-layer-two absolute inset-0" />
+        <span className="sparkle-layer sparkle-layer-three absolute inset-0" />
+        <span className="sparkle-layer sparkle-layer-four absolute inset-0" />
+        <span className="star-sparkle star-sparkle-one" />
+        <span className="star-sparkle star-sparkle-two" />
+        <span className="star-sparkle star-sparkle-three" />
+        <span className="star-sparkle star-sparkle-four" />
+        <span className="star-sparkle star-sparkle-five" />
+        <span className="star-sparkle star-sparkle-six" />
+        <span className="star-sparkle star-sparkle-seven" />
+        <span className="star-sparkle star-sparkle-eight" />
+      </div>
+
       {/* Moon */}
       <div
         aria-hidden="true"
-        className="animate-moon-breathe absolute top-[6%] right-[8%] h-24 w-24 sm:h-32 sm:w-32 lg:h-40 lg:w-40"
+        className="animate-moon-breathe absolute top-[6%] left-[8%] h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
       >
         <div
           className="absolute -inset-[60%] rounded-full blur-2xl"
-          style={{ background: "radial-gradient(circle, color-mix(in oklab, var(--glow) 45%, transparent), transparent 65%)" }}
+          style={{ background: "radial-gradient(circle, color-mix(in oklab, var(--glow) 65%, transparent), transparent 65%)" }}
         />
         <MoonArt className="relative" />
       </div>
 
       {/* Clouds — slow, distant, non-interactive */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[5]">
         <div
-          className="animate-cloud-drift absolute top-[18%] -left-[10%] h-24 w-[70%] opacity-25 blur-[2px]"
-          style={{ "--cloud-duration": "110s" } as CSSProperties}
-        >
-          <CloudArt />
-        </div>
-        <div
-          className="animate-cloud-drift absolute top-[46%] -right-[15%] h-28 w-[65%] opacity-20 blur-[3px]"
-          style={{ "--cloud-duration": "150s", "--cloud-delay": "-40s" } as CSSProperties}
-        >
-          <CloudArt />
-        </div>
-        <div
-          className="animate-cloud-drift absolute bottom-[6%] left-[5%] h-32 w-[80%] opacity-15 blur-[4px]"
+          className="animate-cloud-drift absolute -top-[22%] left-[calc(50%_-_51vw)] w-[102vw] aspect-[3326/1903] opacity-80 brightness-80 blur-[4px]"
           style={{ "--cloud-duration": "180s", "--cloud-delay": "-90s" } as CSSProperties}
         >
-          <CloudArt />
+          <CloudArt className="animate-background-hue" />
         </div>
+        <div
+          className="animate-cloud-drift absolute top-[38%] left-[calc(50%_-_26vw)] w-[52vw] aspect-[3326/1903] opacity-80 brightness-80 blur-[3px]"
+          style={{ "--cloud-duration": "210s", "--cloud-delay": "-35s" } as CSSProperties}
+        >
+          <CloudArt className="animate-background-hue" />
+        </div>
+        <div
+          className="animate-cloud-drift absolute -bottom-[28%] left-[calc(50%_-_34vw)] w-[68vw] aspect-[3326/1903] opacity-80 brightness-80 blur-[2px]"
+          style={{ "--cloud-duration": "240s", "--cloud-delay": "-170s" } as CSSProperties}
+        >
+          <CloudArt className="animate-background-hue" />
+        </div>
+      </div>
+
+      {/* Full-width cloud anchored to the viewport's bottom edge. */}
+      <div
+        aria-hidden="true"
+        className="animate-cloud-bottom-float pointer-events-none absolute inset-x-0 -bottom-4 z-[6] aspect-[3508/2480] w-full brightness-80"
+      >
+        <CloudBottomArt className="animate-background-hue" />
       </div>
 
       {/* ── Caption ────────────────────────────────────────────────────── */}
