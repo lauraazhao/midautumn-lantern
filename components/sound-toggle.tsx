@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { Volume2, VolumeX } from "lucide-react"
 import { disable, enable } from "@/lib/audio-engine"
+import { MoonArt } from "@/components/scene-art"
 
 /**
  * Audio is off until the visitor asks for it — browsers block autoplay, and a
@@ -30,20 +31,21 @@ export function SoundToggle() {
       onClick={toggle}
       aria-pressed={on}
       aria-label={on ? "Turn sound off" : "Turn sound on"}
-      className="sound-trigger group absolute top-5 left-5 z-[70] sm:top-6 sm:left-6"
+      className="moon-sound-toggle group absolute top-[6%] left-[8%] z-[70] h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
     >
-      {on ? (
-        <Volume2 aria-hidden="true" className="sound-trigger__icon" strokeWidth={1.5} />
-      ) : (
-        <VolumeX aria-hidden="true" className="sound-trigger__icon" strokeWidth={1.5} />
-      )}
-      <span className="sound-trigger__label font-serif uppercase">Sound</span>
+      <span aria-hidden="true" className="moon-sound-toggle__halo" />
+      <span aria-hidden="true" className="moon-sound-toggle__art animate-moon-breathe">
+        <MoonArt />
+      </span>
+      <span aria-hidden="true" className="moon-sound-toggle__status">
+        {on ? <Volume2 strokeWidth={2} /> : <VolumeX strokeWidth={2} />}
+      </span>
 
-      {/* A soft breathing ring while sound is off, so the control is noticed. */}
+      {/* A faint ring hints that the dim moon can be clicked to enable sound. */}
       {!on && (
         <span
           aria-hidden="true"
-          className="sound-trigger__hint animate-sound-hint pointer-events-none absolute inset-0"
+          className="moon-sound-toggle__hint animate-sound-hint pointer-events-none absolute -inset-[18%]"
         />
       )}
     </button>

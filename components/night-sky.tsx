@@ -7,7 +7,7 @@ import { createLantern } from "@/lib/lantern-repository"
 import { randomPlacement, RELEASE_ORIGIN } from "@/lib/lantern-positioning"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { playLanternChime, playLanternRelease } from "@/lib/audio-engine"
-import { BackgroundArt, CloudArt, CloudBottomArt, MoonArt } from "@/components/scene-art"
+import { BackgroundArt, CloudArt, CloudBottomArt } from "@/components/scene-art"
 import { LanternBody, LANTERN_BASE } from "@/components/lantern-body"
 import { LanternField } from "@/components/lantern-field"
 import { LanternMessage } from "@/components/lantern-message"
@@ -27,6 +27,7 @@ type NightSkyProps = {
 
 export function NightSky({ initialLanterns }: NightSkyProps) {
   const [lanterns, setLanterns] = useState(initialLanterns)
+  const [showIntro, setShowIntro] = useState(true)
   const [opened, setOpened] = useState<Lantern | null>(null)
   const [flying, setFlying] = useState<Lantern | null>(null)
   // Lanterns that arrived by release: their drift starts at rest so they do
@@ -117,18 +118,6 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
         <span className="star-sparkle star-sparkle-eight" />
       </div>
 
-      {/* Moon */}
-      <div
-        aria-hidden="true"
-        className="animate-moon-breathe absolute top-[6%] left-[8%] h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
-      >
-        <div
-          className="absolute -inset-[60%] rounded-full blur-2xl"
-          style={{ background: "radial-gradient(circle, color-mix(in oklab, var(--glow) 65%, transparent), transparent 65%)" }}
-        />
-        <MoonArt className="relative" />
-      </div>
-
       {/* Clouds — slow, distant, non-interactive */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[5]">
         <div
@@ -162,7 +151,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       {/* ── Caption ────────────────────────────────────────────────────── */}
       <header className="animate-caption-drift pointer-events-none absolute top-5 left-1/2 z-[70] flex flex-col items-center gap-1 px-4 text-[#f5dfb2]/60 sm:top-6">
         <h1 className="px-5 text-center font-serif text-sm leading-snug tracking-wide uppercase text-balance sm:px-7 sm:text-base">
-          What are people wishing for this Mid-Autumn Festival?
+          Read what others are wishing for, or make your own
         </h1>
         <span className="sr-only">Select a lantern to read the message written on it.</span>
       </header>
@@ -210,6 +199,19 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       </p>
 
       {opened && <LanternMessage lantern={opened} onClose={handleClose} />}
+
+      {showIntro && (
+        <div
+          className="festival-intro fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-[#050713] px-6"
+          onAnimationEnd={(event) => {
+            if (event.currentTarget === event.target) setShowIntro(false)
+          }}
+        >
+          <p className="festival-intro__text max-w-3xl text-center font-serif text-2xl leading-snug tracking-[0.04em] text-[#f5dfb2] text-balance sm:text-4xl lg:text-5xl">
+            what are people wishing for this Mid-Autumn Festival?
+          </p>
+        </div>
+      )}
     </main>
   )
 }

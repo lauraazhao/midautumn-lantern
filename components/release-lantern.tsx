@@ -76,7 +76,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
           <span />
         </span>
         <span aria-hidden="true" className="release-trigger__flourish release-trigger__flourish--left" />
-        <span className="release-trigger__label font-serif uppercase">Release a lantern</span>
+        <span className="release-trigger__label font-serif uppercase">Release a lantern wish</span>
         <span aria-hidden="true" className="release-trigger__flourish release-trigger__flourish--right" />
       </button>
 
@@ -103,7 +103,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                 type="button"
                 onClick={close}
                 aria-label="Close without releasing"
-                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-none border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
+                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
                 style={{
                   borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
                   backgroundColor: "rgba(255,255,255,0.07)",
@@ -129,11 +129,11 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                     onChange={(event) => setMessage(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
                     maxLength={MAX_MESSAGE_LENGTH}
                     rows={1}
-                    placeholder="A wish, a thank you, a hope for someone…"
+                    placeholder="Type out your wish"
                     className={`w-full resize-none overflow-hidden border-0 bg-transparent text-center font-serif outline-none placeholder:opacity-40 focus-visible:outline-none ${messageTextSize}`}
                     style={{
                       color: category.ink,
-                      caretColor: category.color,
+                      caretColor: "#000000",
                       textShadow: "0 1px 0 rgba(255,255,255,0.35)",
                     }}
                   />

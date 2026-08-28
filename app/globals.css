@@ -329,119 +329,106 @@
   filter: saturate(0.65);
 }
 
-/* Compact companion plaque for the sound control. It uses the same lacquer,
-   crimson and antique-gold vocabulary as the primary release action while
-   remaining visually secondary. */
-.sound-trigger {
-  isolation: isolate;
-  display: inline-flex;
-  min-height: 2.7rem;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.62rem 1rem 0.62rem 1.1rem;
-  border: 1px solid rgba(201, 154, 81, 0.5);
-  border-radius: 0.85rem 0.25rem;
-  color: rgba(233, 206, 152, 0.62);
-  background:
-    radial-gradient(circle at 20% 0%, rgba(173, 48, 27, 0.08), transparent 48%),
-    linear-gradient(180deg, rgba(31, 22, 20, 0.7), rgba(12, 13, 20, 0.7));
-  box-shadow:
-    0 0 0 2px rgba(88, 25, 21, 0.38),
-    0 0 0 3px rgba(190, 128, 57, 0.16),
-    0 12px 28px -15px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 rgba(255, 224, 166, 0.1);
-  backdrop-filter: blur(10px);
-  opacity: 0.72;
-  transition: color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, opacity 300ms ease, transform 300ms ease;
+/* The moon itself is the sound toggle. Off is dim and cool; on restores the
+   full moon and strengthens its halo without adding a separate UI plaque. */
+.moon-sound-toggle {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.58;
+  filter: saturate(0.65) brightness(0.82);
+  transition: opacity 500ms ease, filter 500ms ease, transform 300ms ease;
 }
 
-.sound-trigger::before {
+.moon-sound-toggle:hover,
+.moon-sound-toggle:focus-visible,
+.moon-sound-toggle[aria-pressed="true"] {
+  opacity: 1;
+  filter: saturate(1) brightness(1);
+}
+
+.moon-sound-toggle:hover {
+  transform: scale(1.06);
+}
+
+.moon-sound-toggle:active {
+  transform: scale(0.98);
+}
+
+.moon-sound-toggle:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--glow) 75%, transparent);
+  outline-offset: 8px;
+}
+
+.moon-sound-toggle__art {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 5px rgba(255, 207, 138, 0.18));
+  transition: filter 500ms ease;
+}
+
+.moon-sound-toggle__halo {
   position: absolute;
-  z-index: -1;
-  inset: 3px;
-  content: "";
-  border: 1px solid rgba(171, 54, 31, 0.42);
-  border-radius: 0.58rem 0.12rem;
-  box-shadow: inset 0 0 0 1px rgba(230, 181, 100, 0.14);
+  z-index: 1;
+  inset: -60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--glow) 28%, transparent), transparent 65%);
+  filter: blur(16px);
+  opacity: 0.45;
+  transition: opacity 500ms ease, transform 500ms ease;
   pointer-events: none;
 }
 
-.sound-trigger:hover {
+.moon-sound-toggle[aria-pressed="true"] .moon-sound-toggle__art {
+  filter: drop-shadow(0 0 9px rgba(255, 207, 138, 0.5));
+}
+
+.moon-sound-toggle[aria-pressed="true"] .moon-sound-toggle__halo {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+.moon-sound-toggle__status {
+  position: absolute;
+  z-index: 4;
+  right: -0.18rem;
+  bottom: -0.18rem;
+  display: grid;
+  width: 1.3rem;
+  height: 1.3rem;
+  place-items: center;
+  border: 1px solid rgba(255, 220, 158, 0.58);
+  border-radius: 50%;
+  color: rgba(255, 235, 197, 0.82);
+  background: rgba(21, 18, 25, 0.82);
+  box-shadow: 0 0 8px rgba(255, 198, 104, 0.2);
+  transition: color 400ms ease, background-color 400ms ease, border-color 400ms ease, box-shadow 400ms ease;
+  pointer-events: none;
+}
+
+.moon-sound-toggle__status svg {
+  width: 0.76rem;
+  height: 0.76rem;
+}
+
+.moon-sound-toggle[aria-pressed="true"] .moon-sound-toggle__status {
+  border-color: rgba(255, 222, 158, 0.9);
   color: #fff0c9;
-  border-color: #edc273;
-  box-shadow:
-    0 0 0 2px rgba(119, 31, 24, 0.88),
-    0 0 0 3px rgba(229, 169, 83, 0.58),
-    0 0 20px rgba(224, 139, 57, 0.2),
-    0 14px 30px -15px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 rgba(255, 232, 185, 0.16);
-  transform: translateY(-2px);
-  opacity: 1;
+  background: rgba(111, 60, 38, 0.92);
+  box-shadow: 0 0 10px rgba(255, 191, 91, 0.42);
 }
 
-/* Sound-on remains fully illuminated; sound-off falls back to the faded base
-   state above once the pointer or keyboard focus leaves the control. */
-.sound-trigger[aria-pressed="true"] {
-  color: #fff0c9;
-  border-color: #e4b86b;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(173, 48, 27, 0.18), transparent 48%),
-    linear-gradient(180deg, rgba(55, 34, 28, 0.9), rgba(22, 19, 23, 0.9));
-  box-shadow:
-    0 0 0 2px rgba(119, 31, 24, 0.78),
-    0 0 0 3px rgba(229, 169, 83, 0.5),
-    0 0 18px rgba(224, 139, 57, 0.18),
-    0 12px 28px -15px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 rgba(255, 232, 185, 0.16);
-  opacity: 1;
-}
-
-.sound-trigger[aria-pressed="true"]::before {
-  border-color: rgba(190, 62, 39, 0.72);
-}
-
-.sound-trigger[aria-pressed="true"] .sound-trigger__icon {
-  color: #f1c878;
-  filter: drop-shadow(0 0 6px rgba(241, 175, 83, 0.38));
-}
-
-.sound-trigger:active {
-  transform: translateY(0);
-}
-
-.sound-trigger:focus-visible {
-  opacity: 1;
-  outline: 2px solid var(--glow);
-  outline-offset: 5px;
-}
-
-.sound-trigger__icon {
-  position: relative;
-  z-index: 1;
-  width: 1rem;
-  height: 1rem;
-  color: rgba(216, 168, 93, 0.7);
-  filter: drop-shadow(0 0 5px rgba(230, 165, 81, 0.2));
-  transition: color 300ms ease, filter 300ms ease;
-}
-
-.sound-trigger:hover .sound-trigger__icon {
-  color: #f1c878;
-  filter: drop-shadow(0 0 6px rgba(241, 175, 83, 0.4));
-}
-
-.sound-trigger__label {
-  position: relative;
-  z-index: 1;
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-shadow: 0 1px 7px rgba(255, 183, 94, 0.14);
-}
-
-.sound-trigger__hint {
-  border: 1px solid rgba(255, 207, 138, 0.2);
-  border-radius: 0.85rem 0.25rem;
+.moon-sound-toggle__hint {
+  z-index: 3;
+  border: 1px solid rgba(255, 218, 155, 0.28);
+  border-radius: 50%;
 }
 
 @media (max-width: 420px) {
@@ -470,6 +457,52 @@
 }
 
 /* --- Scene motion -------------------------------------------------------- */
+
+/* The opening question emerges from darkness before the initialized sky is
+   revealed beneath it. Keeping the sky mounted avoids a visual loading jump. */
+@keyframes festival-intro-fade {
+  0%,
+  68% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes festival-intro-text-reveal {
+  0%,
+  12% {
+    opacity: 0;
+    filter: blur(10px);
+    clip-path: inset(0 50% 0 50%);
+    transform: translate3d(0, 12px, 0);
+  }
+  38%,
+  68% {
+    opacity: 1;
+    filter: blur(0);
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
+  88%,
+  100% {
+    opacity: 0;
+    filter: blur(3px);
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+.festival-intro {
+  animation: festival-intro-fade 5.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.festival-intro__text {
+  animation: festival-intro-text-reveal 5.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  text-shadow: 0 0 28px rgba(255, 207, 138, 0.18);
+}
 
 @keyframes lantern-float {
   0%,
@@ -777,6 +810,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .festival-intro,
+  .festival-intro__text {
+    animation-duration: 1ms !important;
+  }
+
   .animate-lantern-float,
   .animate-caption-drift,
   .animate-background-hue,
