@@ -1,10 +1,10 @@
 /**
- * Procedural audio for the lantern sky, built on the Web Audio API.
+ * Audio for the lantern sky, routed through the Web Audio API.
  *
- * Everything here is synthesised at runtime rather than loaded from files:
- * an ambient bed that never loops audibly, a warm bell when a lantern opens,
- * and an airy lift when one is released. Browsers block audio until a user
- * gesture, so nothing is created until `enable()` is called from a click.
+ * The ambient bed comes from `/public/assets/background-music.mp3`; the warm
+ * bell when a lantern opens and airy lift when one is released are synthesised
+ * at runtime. Browsers block audio until a user gesture, so nothing is created
+ * until `enable()` is called from a click.
  */
 
 // A pentatonic set — any combination of these sounds consonant, which keeps
@@ -46,127 +46,39 @@ function rampMaster(target: number, seconds: number) {
   master.gain.linearRampToValueAtTime(target, now + seconds)
 }
 
-/**
- * A four-chord progression voiced as a slow pad, plus a quiet sub for warmth
- * and sparse bells drifting over the top.
- *
- * The voices sit between roughly 165Hz and 400Hz on purpose. An earlier
- * version droned at 55-110Hz behind a 420Hz lowpass, which measures fine but
- * is below what laptop and phone speakers actually reproduce — it read as
- * silence. This register is audible on anything.
- */
-const PROGRESSION = [
-  [220.0, 261.63, 329.63], // A minor
-  [174.61, 220.0, 261.63], // F major
-  [261.63, 329.63, 392.0], // C major
-  [196.0, 246.94, 293.66], // G major
-]
-
-/** How long the pad rests on each chord. */
-const CHORD_SECONDS = 13
-
+/** Loops the supplied background track through the shared master bus. */
 function startAmbient(): AmbientBed {
   const audio = getContext()
   if (!audio || !master) return { stop: () => {} }
 
   const now = audio.currentTime
+  const track = new Audio("/assets/background-music.mp3")
+  track.loop = true
+  track.preload = "auto"
 
+  const source = audio.createMediaElementSource(track)
   const bed = audio.createGain()
   bed.gain.setValueAtTime(0, now)
-  bed.gain.linearRampToValueAtTime(0.5, now + 4)
-  bed.connect(master)
+  bed.gain.linearRampToValueAtTime(0.5, now + 2.5)
+  source.connect(bed).connect(master)
 
-  // Soft ceiling: warm enough to sit under the effects, open enough to hear.
-  const tone = audio.createBiquadFilter()
-  tone.type = "lowpass"
-  tone.frequency.value = 1500
-  tone.Q.value = 0.5
-  tone.connect(bed)
-
-  // Slow filter sweep so the pad breathes instead of sitting still.
-  const sweep = audio.createOscillator()
-  sweep.frequency.value = 0.045
-  const sweepDepth = audio.createGain()
-  sweepDepth.gain.value = 480
-  sweep.connect(sweepDepth).connect(tone.frequency)
-  sweep.start()
-
-  // Three chord voices, each a detuned pair so the pad shimmers.
-  const voices = PROGRESSION[0].map((freq, i) => {
-    const gain = audio.createGain()
-    gain.gain.value = 0.16 / (1 + i * 0.3)
-    gain.connect(tone)
-
-    const oscs = [-7, 7].map((detune) => {
-      const osc = audio.createOscillator()
-      osc.type = "triangle"
-      osc.frequency.value = freq
-      osc.detune.value = detune
-      osc.connect(gain)
-      osc.start()
-      return osc
-    })
-
-    // Independent swell per voice, so they drift in and out of each other.
-    const lfo = audio.createOscillator()
-    lfo.frequency.value = 0.05 + i * 0.021
-    const lfoDepth = audio.createGain()
-    lfoDepth.gain.value = 0.05
-    lfo.connect(lfoDepth).connect(gain.gain)
-    lfo.start()
-
-    return { oscs, lfo }
+  void track.play().catch(() => {
+    // The sound button normally provides the required user gesture. If a
+    // browser still rejects playback, leave the interaction effects available.
   })
-
-  // Quiet sine an octave below the root — felt more than heard.
-  const sub = audio.createOscillator()
-  sub.type = "sine"
-  sub.frequency.value = PROGRESSION[0][0] / 2
-  const subGain = audio.createGain()
-  subGain.gain.value = 0.1
-  sub.connect(subGain).connect(bed)
-  sub.start()
-
-  // Walk the progression, gliding rather than jumping between chords.
-  let step = 0
-  const chordTimer = setInterval(() => {
-    step = (step + 1) % PROGRESSION.length
-    const chord = PROGRESSION[step]
-    const at = audio.currentTime
-    voices.forEach((v, i) => {
-      for (const osc of v.oscs) {
-        osc.frequency.setTargetAtTime(chord[i], at, 1.8)
-      }
-    })
-    sub.frequency.setTargetAtTime(chord[0] / 2, at, 2.2)
-  }, CHORD_SECONDS * 1000)
-
-  // Sparse bell-like tones over the pad.
-  let toneTimer: ReturnType<typeof setTimeout> | undefined
-  const scheduleTone = () => {
-    const delay = 6000 + Math.random() * 11000
-    toneTimer = setTimeout(() => {
-      const root = PENTATONIC[Math.floor(Math.random() * PENTATONIC.length)]
-      voice(root * 2, { level: 0.09, decay: 5.5, brightness: 2400, target: bed })
-      scheduleTone()
-    }, delay)
-  }
-  scheduleTone()
 
   return {
     stop: () => {
-      clearInterval(chordTimer)
-      if (toneTimer) clearTimeout(toneTimer)
       const at = audio.currentTime
       bed.gain.cancelScheduledValues(at)
       bed.gain.setValueAtTime(bed.gain.value, at)
-      bed.gain.linearRampToValueAtTime(0, at + 1.2)
-      for (const { oscs, lfo } of voices) {
-        for (const osc of oscs) osc.stop(at + 1.4)
-        lfo.stop(at + 1.4)
-      }
-      sub.stop(at + 1.4)
-      sweep.stop(at + 1.4)
+      bed.gain.linearRampToValueAtTime(0, at + 0.6)
+      window.setTimeout(() => {
+        track.pause()
+        track.currentTime = 0
+        source.disconnect()
+        bed.disconnect()
+      }, 650)
     },
   }
 }

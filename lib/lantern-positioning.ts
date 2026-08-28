@@ -14,8 +14,8 @@ const BOUNDS = {
   maxY: 84,
 }
 
-/** Keep-clear zone for the bottom-left "Release a lantern" control. */
-const RELEASE_ZONE = { maxX: 32, minY: 72 }
+/** Keep-clear zone for the bottom-center "Release a lantern" control. */
+const RELEASE_ZONE = { minX: 36, maxX: 64, minY: 72 }
 
 /** Keep-clear zone for the title, top-left. */
 const TITLE_ZONE = { maxX: 26, maxY: 14 }
@@ -51,7 +51,7 @@ export function hashString(value: string) {
 
 /** Areas reserved for the UI and the moon. */
 function isBlocked(x: number, y: number) {
-  if (x < RELEASE_ZONE.maxX && y > RELEASE_ZONE.minY) return true
+  if (x > RELEASE_ZONE.minX && x < RELEASE_ZONE.maxX && y > RELEASE_ZONE.minY) return true
   if (x < TITLE_ZONE.maxX && y < TITLE_ZONE.maxY) return true
   if (x > MOON_ZONE.minX && y < MOON_ZONE.maxY) return true
   return false
@@ -119,5 +119,5 @@ export function randomPlacement(existing: Array<{ x: number; y: number }>, seed 
   }
 }
 
-/** Origin of the release animation — next to the bottom-left button. */
-export const RELEASE_ORIGIN = { x: 12, y: 94 }
+/** Origin of the release animation — directly above the bottom-center button. */
+export const RELEASE_ORIGIN = { x: 50, y: 94 }

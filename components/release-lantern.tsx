@@ -70,13 +70,14 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
-        className="fixed bottom-5 left-4 z-[80] inline-flex min-h-12 items-center gap-2.5 rounded-none border border-primary/30 bg-card/70 px-5 text-sm text-foreground shadow-[0_16px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md transition-colors hover:border-primary/60 hover:bg-card/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:bottom-8 sm:left-8"
+        className="release-trigger group fixed bottom-5 left-1/2 z-[80] sm:bottom-8"
       >
-        <span
-          aria-hidden="true"
-          className="size-2.5 rounded-full bg-primary shadow-[0_0_12px_2px_var(--glow)]"
-        />
-        Release a lantern
+        <span aria-hidden="true" className="release-trigger__crest">
+          <span />
+        </span>
+        <span aria-hidden="true" className="release-trigger__flourish release-trigger__flourish--left" />
+        <span className="release-trigger__label font-serif uppercase">Release a lantern</span>
+        <span aria-hidden="true" className="release-trigger__flourish release-trigger__flourish--right" />
       </button>
 
       {open && (
@@ -93,7 +94,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
             role="dialog"
             aria-modal="true"
             aria-label="Write a lantern and release it"
-            className="relative my-auto flex flex-col items-center"
+            className="relative top-6 my-auto flex flex-col items-center sm:top-8"
           >
             {/* Sized to the lantern so it shares the controls' center line. */}
             <div className="relative h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3]">
@@ -143,7 +144,10 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
 
             {/* The artwork is scaled beyond its layout box, so this spacing
                 keeps all metadata and controls below the visible lantern. */}
-            <div className="mt-[min(16dvh,9rem)] flex flex-col items-center gap-4">
+            <div className="relative mt-[min(16dvh,9rem)] flex flex-col items-center gap-4">
+              <div className="absolute bottom-full left-1/2 mb-4 w-[min(90vw,32rem)] -translate-x-1/2">
+                <CategorySelector value={tag} onChange={setTag} />
+              </div>
               <div className="flex flex-col items-center gap-1.5">
                 <span
                   aria-hidden="true"
@@ -160,11 +164,10 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                   {remaining} characters left
                 </span>
               </div>
-              <CategorySelector value={tag} onChange={setTag} />
               <button
                 type="submit"
                 disabled={!canRelease}
-                className="inline-flex min-h-11 items-center rounded-none bg-primary px-6 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-40"
+                className="release-submit font-serif uppercase"
               >
                 {busy ? "Releasing…" : "Release into the sky"}
               </button>

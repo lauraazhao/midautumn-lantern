@@ -160,16 +160,10 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
       </div>
 
       {/* ── Caption ────────────────────────────────────────────────────── */}
-      <header className="animate-caption-drift pointer-events-none absolute bottom-24 left-1/2 z-[70] flex flex-col items-center gap-1 px-4 sm:bottom-8">
-        <h1 className="bg-caption/65 px-5 py-2.5 text-center font-serif text-sm leading-snug tracking-wide text-caption-foreground uppercase text-balance backdrop-blur-sm sm:px-7 sm:py-3 sm:text-base">
+      <header className="animate-caption-drift pointer-events-none absolute top-5 left-1/2 z-[70] flex flex-col items-center gap-1 px-4 text-[#f5dfb2]/60 sm:top-6">
+        <h1 className="px-5 text-center font-serif text-sm leading-snug tracking-wide uppercase text-balance sm:px-7 sm:text-base">
           What are people wishing for this Mid-Autumn Festival?
         </h1>
-        <p
-          aria-hidden="true"
-          className="bg-caption/65 px-5 py-2 text-center font-serif text-xs leading-snug tracking-[0.12em] text-caption-foreground uppercase backdrop-blur-sm sm:px-7 sm:py-2.5 sm:text-sm"
-        >
-          {"[Click lantern to read]"}
-        </p>
         <span className="sr-only">Select a lantern to read the message written on it.</span>
       </header>
 
