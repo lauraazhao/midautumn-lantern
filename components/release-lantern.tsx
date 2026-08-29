@@ -130,7 +130,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
           <div
             aria-hidden="true"
             onClick={close}
-            className="absolute inset-0 bg-sky-deep/70 backdrop-blur-[3px] duration-500 animate-in fade-in"
+            className="composer-backdrop absolute inset-0 bg-sky-deep/70 backdrop-blur-[3px] duration-500 animate-in fade-in"
           />
 
           <form

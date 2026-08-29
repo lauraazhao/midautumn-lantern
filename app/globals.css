@@ -455,9 +455,20 @@
 @media (max-width: 639px) {
   .composer-overlay {
     min-height: 0;
+    background: color-mix(in oklab, var(--sky-deep) 70%, transparent);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     overscroll-behavior: contain;
     scroll-padding-block: 4rem 1rem;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* The fixed scrolling surface owns the phone dimming. An absolute child only
+     covers the first viewport and exposes the sky as long content scrolls. */
+  .composer-backdrop {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .composer-dialog {
