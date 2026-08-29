@@ -450,6 +450,57 @@
   }
 }
 
+/* On phones the writing flow follows normal document order so the virtual
+   keyboard can reduce the visual viewport without stacking controls together. */
+@media (max-width: 639px) {
+  .composer-overlay {
+    min-height: 0;
+    overscroll-behavior: contain;
+    scroll-padding-block: 4rem 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .composer-dialog {
+    min-height: 100%;
+  }
+
+  .composer-lantern > .animate-lantern-float {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+  }
+
+  .composer-submit {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: min(100%, 18rem);
+    margin-top: 0.25rem;
+    transform: none;
+  }
+
+  .composer-submit:hover:not(:disabled),
+  .composer-submit:active:not(:disabled) {
+    transform: translateY(-2px);
+  }
+}
+
+/* Short phone viewports (especially with the keyboard open) keep a readable
+   writing surface while allowing the remaining controls to scroll below it. */
+@media (max-width: 639px) and (max-height: 520px) {
+  .composer-dialog {
+    padding-top: 3.5rem;
+  }
+
+  .composer-lantern {
+    height: 12rem;
+  }
+
+  .composer-controls {
+    margin-top: 2rem;
+  }
+}
+
 @media (min-width: 640px) {
   .release-submit {
     bottom: 2rem;

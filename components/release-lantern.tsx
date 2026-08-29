@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react"
 import { X } from "lucide-react"
 import type { LanternTag } from "@/types/lantern"
 import { lanternCategories, MAX_MESSAGE_LENGTH } from "@/types/lantern"
@@ -24,6 +24,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState("")
   const [tag, setTag] = useState<LanternTag | null>(null)
+  const [viewportStyle, setViewportStyle] = useState<CSSProperties>()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
@@ -41,7 +42,14 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
     const textarea = textareaRef.current
     if (!textarea || !open) return
     textarea.style.height = "auto"
-    textarea.style.height = `${textarea.scrollHeight}px`
+    if (window.innerWidth < 640) {
+      const maxHeight = 128
+      textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`
+      textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden"
+    } else {
+      textarea.style.height = `${textarea.scrollHeight}px`
+      textarea.style.overflowY = "hidden"
+    }
   }, [message, messageTextSize, open])
 
   useEffect(() => {
@@ -53,6 +61,33 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
     document.addEventListener("keydown", onKeyDown)
     return () => document.removeEventListener("keydown", onKeyDown)
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
+
+  useEffect(() => {
+    if (!open || !window.matchMedia("(max-width: 639px)").matches || !window.visualViewport) {
+      setViewportStyle(undefined)
+      return
+    }
+    const viewport = window.visualViewport
+
+    const syncViewport = () => {
+      if (!window.matchMedia("(max-width: 639px)").matches) {
+        setViewportStyle(undefined)
+        return
+      }
+      setViewportStyle({ height: viewport.height, top: viewport.offsetTop, bottom: "auto" })
+      if (document.activeElement === textareaRef.current) {
+        window.requestAnimationFrame(() => textareaRef.current?.scrollIntoView({ block: "center" }))
+      }
+    }
+
+    syncViewport()
+    viewport.addEventListener("resize", syncViewport)
+    viewport.addEventListener("scroll", syncViewport)
+    return () => {
+      viewport.removeEventListener("resize", syncViewport)
+      viewport.removeEventListener("scroll", syncViewport)
+    }
   }, [open])
 
   const close = () => {
@@ -87,7 +122,10 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto p-4">
+        <div
+          className="composer-overlay fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto sm:grid sm:place-items-center sm:p-4"
+          style={viewportStyle}
+        >
           {/* Same dimmed sky as reading a lantern. */}
           <div
             aria-hidden="true"
@@ -100,16 +138,16 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
             role="dialog"
             aria-modal="true"
             aria-label="Write a lantern and release it"
-            className="relative top-6 my-auto flex flex-col items-center sm:top-8"
+            className="composer-dialog relative mx-auto flex min-h-full w-full flex-col items-center px-3 pt-16 pb-6 sm:top-8 sm:my-auto sm:min-h-0 sm:w-auto sm:px-0 sm:py-0"
           >
             {/* Sized to the lantern so it shares the controls' center line. */}
-            <div className="relative h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3]">
+            <div className="composer-lantern relative h-[min(50dvh,30rem)] max-w-[82vw] aspect-[2/3] max-sm:h-[clamp(13rem,36dvh,19rem)] max-sm:max-w-[76vw] max-sm:shrink-0">
               {/* Stay near the lantern while clearing its scaled top-right edge. */}
               <button
                 type="button"
                 onClick={close}
                 aria-label="Close without releasing"
-                className="absolute -top-16 -right-6 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:top-0 sm:-right-[45%]"
+                className="fixed top-3 right-3 z-20 grid size-11 place-items-center rounded-full border backdrop-blur-sm transition-[background-color,color,border-color] duration-300 hover:bg-glow/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-glow/70 sm:absolute sm:top-0 sm:-right-[45%]"
                 style={{
                   borderColor: "color-mix(in oklab, var(--glow) 40%, transparent)",
                   backgroundColor: "rgba(255,255,255,0.07)",
@@ -120,38 +158,36 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
               </button>
 
               <LanternNote
-              paper={noteColors.paper}
-              ink={noteColors.ink}
-              accent={noteColors.color}
-              message={
-                <>
-                  <label htmlFor="lantern-message" className="sr-only">
-                    Your message, up to {MAX_MESSAGE_LENGTH} characters
-                  </label>
-                  <textarea
-                    id="lantern-message"
-                    ref={textareaRef}
-                    value={message}
-                    onChange={(event) => setMessage(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
-                    maxLength={MAX_MESSAGE_LENGTH}
-                    rows={1}
-                    placeholder="Type out your wish"
-                    className={`w-full resize-none overflow-hidden border-0 bg-transparent text-center font-serif outline-none placeholder:opacity-40 focus-visible:outline-none ${messageTextSize}`}
-                    style={{
-                      color: noteColors.ink,
-                      caretColor: "#000000",
-                      textShadow: "0 1px 0 rgba(255,255,255,0.35)",
-                    }}
-                  />
-                </>
-              }
+                paper={noteColors.paper}
+                ink={noteColors.ink}
+                accent={noteColors.color}
+                message={
+                  <>
+                    <label htmlFor="lantern-message" className="sr-only">
+                      Your message, up to {MAX_MESSAGE_LENGTH} characters
+                    </label>
+                    <textarea
+                      id="lantern-message"
+                      ref={textareaRef}
+                      value={message}
+                      onChange={(event) => setMessage(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
+                      maxLength={MAX_MESSAGE_LENGTH}
+                      rows={1}
+                      placeholder="Type out your wish"
+                      className={`w-full resize-none overflow-hidden border-0 bg-transparent text-center font-serif outline-none placeholder:opacity-40 focus-visible:outline-none max-sm:!text-base max-sm:!leading-relaxed ${messageTextSize}`}
+                      style={{
+                        color: noteColors.ink,
+                        caretColor: "#000000",
+                        textShadow: "0 1px 0 rgba(255,255,255,0.35)",
+                      }}
+                    />
+                  </>
+                }
               />
             </div>
 
-            {/* The artwork is scaled beyond its layout box, so this spacing
-                keeps all metadata and controls below the visible lantern. */}
-            <div className="relative mt-[min(16dvh,9rem)] flex flex-col items-center gap-4">
-              <div className="absolute bottom-full left-1/2 mb-4 w-[min(90vw,32rem)] -translate-x-1/2">
+            <div className="composer-controls relative mt-[min(16dvh,9rem)] flex flex-col items-center gap-4 max-sm:mt-10 max-sm:w-full max-sm:gap-3">
+              <div className="w-full px-1 sm:absolute sm:bottom-full sm:left-1/2 sm:mb-4 sm:w-[min(90vw,32rem)] sm:-translate-x-1/2 sm:px-0">
                 <CategorySelector value={tag} onChange={setTag} />
               </div>
               <div className="flex flex-col items-center gap-1.5">
@@ -173,7 +209,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
               <button
                 type="submit"
                 disabled={!canRelease}
-                className="release-submit font-serif uppercase"
+                className="release-submit composer-submit font-serif uppercase"
               >
                 {busy ? "Releasing…" : "Release into the sky"}
               </button>

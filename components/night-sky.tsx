@@ -150,8 +150,9 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
 
       {/* ── Caption ────────────────────────────────────────────────────── */}
       <header className="animate-caption-drift pointer-events-none absolute top-5 left-1/2 z-[70] flex flex-col items-center gap-1 px-4 text-[#f5dfb2]/60 sm:top-6">
-        <h1 className="px-5 text-center font-serif text-sm leading-snug tracking-wide uppercase text-balance sm:px-7 sm:text-base">
-          Read what others are wishing for, or make your own
+        <h1 className="px-1 text-center font-serif text-sm leading-snug tracking-wide uppercase sm:px-7 sm:text-base sm:text-balance">
+          <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">Read what others are wishing for,</span>{" "}
+          <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">or make your own</span>
         </h1>
         <span className="sr-only">Select a lantern to read the message written on it.</span>
       </header>
