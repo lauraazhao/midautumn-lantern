@@ -8,7 +8,7 @@ import { CategorySelector } from "@/components/category-selector"
 import { LanternNote, lanternMessageTextSize } from "@/components/lantern-note"
 
 type ReleaseLanternProps = {
-  onRelease: (input: { message: string; tag: LanternTag }) => void
+  onRelease: (input: { message: string; tag?: LanternTag }) => void
   busy?: boolean
 }
 
@@ -23,11 +23,16 @@ type ReleaseLanternProps = {
 export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps) {
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState("")
-  const [tag, setTag] = useState<LanternTag>("family")
+  const [tag, setTag] = useState<LanternTag | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
-  const category = lanternCategories[tag]
+  const category = tag ? lanternCategories[tag] : null
+  const noteColors = category ?? {
+    paper: "#F0E1C5",
+    ink: "#3E3020",
+    color: "#C8A96A",
+  }
   const remaining = MAX_MESSAGE_LENGTH - message.length
   const canRelease = message.trim().length > 0 && !busy
   const messageTextSize = lanternMessageTextSize(message.length)
@@ -58,8 +63,9 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     if (!canRelease) return
-    onRelease({ message: message.trim(), tag })
+    onRelease({ message: message.trim(), ...(tag ? { tag } : {}) })
     setMessage("")
+    setTag(null)
     setOpen(false)
   }
 
@@ -114,9 +120,9 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
               </button>
 
               <LanternNote
-              paper={category.paper}
-              ink={category.ink}
-              accent={category.color}
+              paper={noteColors.paper}
+              ink={noteColors.ink}
+              accent={noteColors.color}
               message={
                 <>
                   <label htmlFor="lantern-message" className="sr-only">
@@ -132,7 +138,7 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                     placeholder="Type out your wish"
                     className={`w-full resize-none overflow-hidden border-0 bg-transparent text-center font-serif outline-none placeholder:opacity-40 focus-visible:outline-none ${messageTextSize}`}
                     style={{
-                      color: category.ink,
+                      color: noteColors.ink,
                       caretColor: "#000000",
                       textShadow: "0 1px 0 rgba(255,255,255,0.35)",
                     }}
@@ -152,13 +158,13 @@ export function ReleaseLantern({ onRelease, busy = false }: ReleaseLanternProps)
                 <span
                   aria-hidden="true"
                   className="h-px w-10 rounded-full"
-                  style={{ backgroundColor: `${category.ink}33` }}
+                  style={{ backgroundColor: `${noteColors.ink}33` }}
                 />
                 <span
                   className="font-serif text-xs tracking-[0.2em] uppercase"
-                  style={{ color: category.color }}
+                  style={{ color: noteColors.color }}
                 >
-                  {category.label}
+                  {category?.label ?? "Category chosen from your wish"}
                 </span>
                 <span aria-live="polite" className="text-xs tabular-nums opacity-65">
                   {remaining} characters left

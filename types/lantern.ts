@@ -24,7 +24,8 @@ export type Lantern = {
 /** What the UI hands to the data layer when someone releases a lantern. */
 export type NewLantern = {
   message: string
-  tag: LanternTag
+  /** Omitted when the writer leaves category selection to automatic tagging. */
+  tag?: LanternTag
   x: number
   y: number
   rotation: number

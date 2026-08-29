@@ -52,7 +52,7 @@ export function NightSky({ initialLanterns }: NightSkyProps) {
   }, [])
 
   const handleRelease = useCallback(
-    async ({ message, tag }: { message: string; tag: LanternTag }) => {
+    async ({ message, tag }: { message: string; tag?: LanternTag }) => {
       const placement = randomPlacement(lanterns)
       const lantern = await createLantern({ message, tag, ...placement })
 

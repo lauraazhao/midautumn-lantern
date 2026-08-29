@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { inferLanternTag } from "@/lib/infer-lantern-tag"
 import { lanternCategories, MAX_MESSAGE_LENGTH, type Lantern, type LanternTag, type NewLantern } from "@/types/lantern"
 
 /**
@@ -86,16 +87,18 @@ export async function createLantern(input: NewLantern): Promise<Lantern | null> 
     return null
   }
 
-  if (!isLanternTag(input.tag)) {
+  if (input.tag !== undefined && !isLanternTag(input.tag)) {
     console.log("[v0] Rejected lantern: unknown tag", input.tag)
     return null
   }
+
+  const tag = input.tag ?? inferLanternTag(message)
 
   if (!hasSupabaseConfig()) {
     return {
       id: crypto.randomUUID(),
       message,
-      tag: input.tag,
+      tag,
       createdAt: new Date().toISOString(),
       x: input.x,
       y: input.y,
@@ -109,7 +112,7 @@ export async function createLantern(input: NewLantern): Promise<Lantern | null> 
     .from("lanterns")
     .insert({
       message,
-      tag: input.tag,
+      tag,
       x: input.x,
       y: input.y,
       rotation: input.rotation,

@@ -4,7 +4,7 @@ import type { LanternTag } from "@/types/lantern"
 import { lanternCategories, lanternTags } from "@/types/lantern"
 
 type CategorySelectorProps = {
-  value: LanternTag
+  value: LanternTag | null
   onChange: (tag: LanternTag) => void
 }
 
