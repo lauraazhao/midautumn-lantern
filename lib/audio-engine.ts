@@ -1,10 +1,9 @@
 /**
  * Audio for the lantern sky, routed through the Web Audio API.
  *
- * The ambient bed comes from `/public/assets/background-music.mp3`; the warm
- * bell when a lantern opens and airy lift when one is released are synthesised
- * at runtime. Browsers block audio until a user gesture, so nothing is created
- * until `enable()` is called from a click.
+ * The warm bell when a lantern opens and airy lift when one is released are
+ * synthesised at runtime. The background track is owned directly by
+ * SoundToggle so its visible state can never diverge from media playback.
  */
 
 // A pentatonic set — any combination of these sounds consonant, which keeps
@@ -15,12 +14,7 @@ const MASTER_LEVEL = 0.62
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null
-let ambient: AmbientBed | null = null
 let enabled = false
-
-type AmbientBed = {
-  stop: () => void
-}
 
 function getContext(): AudioContext | null {
   if (typeof window === "undefined") return null
@@ -44,43 +38,6 @@ function rampMaster(target: number, seconds: number) {
   master.gain.cancelScheduledValues(now)
   master.gain.setValueAtTime(master.gain.value, now)
   master.gain.linearRampToValueAtTime(target, now + seconds)
-}
-
-/** Loops the supplied background track through the shared master bus. */
-function startAmbient(): AmbientBed {
-  const audio = getContext()
-  if (!audio || !master) return { stop: () => {} }
-
-  const now = audio.currentTime
-  const track = new Audio("/assets/background-music.mp3")
-  track.loop = true
-  track.preload = "auto"
-
-  const source = audio.createMediaElementSource(track)
-  const bed = audio.createGain()
-  bed.gain.setValueAtTime(0, now)
-  bed.gain.linearRampToValueAtTime(0.5, now + 2.5)
-  source.connect(bed).connect(master)
-
-  void track.play().catch(() => {
-    // The sound button normally provides the required user gesture. If a
-    // browser still rejects playback, leave the interaction effects available.
-  })
-
-  return {
-    stop: () => {
-      const at = audio.currentTime
-      bed.gain.cancelScheduledValues(at)
-      bed.gain.setValueAtTime(bed.gain.value, at)
-      bed.gain.linearRampToValueAtTime(0, at + 0.6)
-      window.setTimeout(() => {
-        track.pause()
-        track.currentTime = 0
-        source.disconnect()
-        bed.disconnect()
-      }, 650)
-    },
-  }
 }
 
 /**
@@ -157,16 +114,15 @@ export function enable() {
 
   enabled = true
   rampMaster(MASTER_LEVEL, 1.6)
-  if (!ambient) ambient = startAmbient()
   return true
 }
 
 export function disable() {
   enabled = false
-  rampMaster(0, 0.6)
-  if (ambient) {
-    ambient.stop()
-    ambient = null
+  if (ctx && master) {
+    const now = ctx.currentTime
+    master.gain.cancelScheduledValues(now)
+    master.gain.setValueAtTime(0, now)
   }
 }
 
